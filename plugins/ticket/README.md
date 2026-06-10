@@ -31,10 +31,18 @@ claude plugin install ticket@cegape-marketplace --scope user
 
 ## Configuration (recommandé)
 
-Pour que le skill connaisse vos applications, environnements et clés de projet Jira — et évite de vous les redemander — créez un fichier de config **local** :
+Pour que le skill connaisse vos applications, environnements et clés de projet Jira — et évite de vous les redemander — créez un fichier de config **local**.
+
+**Voie recommandée — la commande dédiée** (entretien guidé, écrit le fichier pour vous) :
+
+```
+/ticket:config            # crée .claude/ticket.config.json (projet)
+/ticket:config --user     # crée ~/.claude/ticket.config.json (tous vos projets)
+```
+
+**Voie manuelle** — copier le modèle et l'éditer :
 
 ```bash
-# Copiez le modèle fourni par le plugin vers votre projet…
 mkdir -p .claude
 cp <plugin>/skills/redacteur-ticket/assets/ticket.config.example.json \
    .claude/ticket.config.json
@@ -103,6 +111,8 @@ Crée une amélioration : ajouter un export PDF sur le bulletin de paie
 ```
 ticket/
 ├── .claude-plugin/plugin.json
+├── commands/
+│   └── config.md                           # /ticket:config — crée le fichier de config local
 └── skills/
     └── redacteur-ticket/
         ├── SKILL.md                            # Expertise : config, workflow, règles, mapping Jira

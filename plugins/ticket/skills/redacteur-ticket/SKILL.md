@@ -17,7 +17,7 @@ Au demarrage, cherche un fichier de config, dans cet ordre :
 
 S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`, `environments` avec nom + URL) et optionnellement le **site Jira**. Utilise ces valeurs pour pre-remplir l'entretien (proposer la liste d'apps, deduire l'URL d'environnement et la cle de projet) au lieu de les redemander.
 
-Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos a l'utilisateur, et propose-lui de creer le fichier a partir du modele `assets/ticket.config.example.json`. Ne jamais inventer d'URL ni de cle de projet.
+Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos a l'utilisateur, et propose-lui de lancer la commande **`/ticket:config`** (entretien guide qui ecrit le fichier) ou de le creer a partir du modele `assets/ticket.config.example.json`. Ne jamais inventer d'URL ni de cle de projet.
 
 Le schema du fichier est documente dans `references/template-reference.md` § `<config_schema>`.
 
