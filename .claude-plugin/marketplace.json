@@ -1,0 +1,23 @@
+{
+  "name": "ticket-qa-marketplace",
+  "owner": {
+    "name": "CEGAPE",
+    "email": ""
+  },
+  "metadata": {
+    "description": "Marketplace public de plugins Claude Code",
+    "version": "0.1.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "ticket-qa",
+      "source": "./plugins/ticket-qa",
+      "description": "Redacteur de tickets QA (standard 3 Amigos) : entretien guide, validation des regles d'or, creation via le MCP Atlassian ou markdown. Applications, environnements et cles de projet definis dans un fichier de config local.",
+      "version": "0.2.0",
+      "author": { "name": "CEGAPE" },
+      "category": "productivity",
+      "tags": ["jira", "ticket", "qa", "3-amigos", "user-story", "bug"]
+    }
+  ]
+}

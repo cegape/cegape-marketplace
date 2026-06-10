@@ -1,0 +1,25 @@
+{
+  "_comment": "Copiez ce fichier vers .claude/ticket-qa.config.json (a la racine de votre projet) ou ~/.claude/ticket-qa.config.json, puis remplacez les valeurs d'exemple par celles de votre organisation. Ce fichier reste LOCAL et n'a pas vocation a etre commite dans un depot public.",
+  "applications": [
+    {
+      "name": "MonApp",
+      "jiraProjectKey": "APP",
+      "environments": [
+        { "name": "Recette", "url": "https://recette.monapp.example" },
+        { "name": "Preprod", "url": "https://preprod.monapp.example" },
+        { "name": "Production", "url": "https://monapp.example" }
+      ]
+    },
+    {
+      "name": "AutreApp",
+      "jiraProjectKey": "AUTR",
+      "environments": [
+        { "name": "Recette", "url": "https://recette.autreapp.example" },
+        { "name": "Production", "url": "https://autreapp.example" }
+      ]
+    }
+  ],
+  "jira": {
+    "site": "monorg.atlassian.net"
+  }
+}

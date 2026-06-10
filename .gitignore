@@ -1,0 +1,3 @@
+# Fichiers de config locaux du plugin ticket-qa (contiennent des infos internes)
+ticket-qa.config.json
+**/.claude/ticket-qa.config.json
