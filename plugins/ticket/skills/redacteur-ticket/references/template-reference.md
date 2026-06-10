@@ -1,4 +1,4 @@
-# Reference — Template Ticket QA (3 Amigos)
+# Reference — Template de Ticket (3 Amigos)
 
 Standard de redaction QA + Produit. Le skill est generique : les applications, environnements
 et cles de projet proviennent du fichier de config local (voir `<config_schema>`), jamais d'une
@@ -9,8 +9,8 @@ valeur en dur. Charge la section utile selon ce que tu rediges.
 <config_schema>
 ## Schema du fichier de config
 
-Emplacement (ordre de recherche) : `.claude/ticket-qa.config.json` (projet) puis
-`~/.claude/ticket-qa.config.json` (utilisateur). Modele : `assets/ticket-qa.config.example.json`.
+Emplacement (ordre de recherche) : `.claude/ticket.config.json` (projet) puis
+`~/.claude/ticket.config.json` (utilisateur). Modele : `assets/ticket.config.example.json`.
 
 ```jsonc
 {

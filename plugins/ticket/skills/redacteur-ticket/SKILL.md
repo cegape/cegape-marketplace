@@ -1,23 +1,23 @@
 ---
-name: Redacteur Ticket QA
+name: Redacteur Ticket
 description: This skill should be used when the user wants to write or create a Jira / QA ticket following the 3-Amigos standard, or asks to "creer un ticket Jira", "rediger un ticket", "creer un bug", "creer une US", "creer une user story", "remonter une anomalie", "remonter une regression", "creer une amelioration", or mentions a tag "[Bug]", "[Regression]", "[Amelioration]", "[US]". The skill reads an optional local config (applications, environnements, cles de projet Jira), interviews the user to collect every required field of the 3-Amigos QA template (titre tagge, environnement, chemin d'acces, description, etapes, comportement constate/attendu, criteres d'acceptance, captures), then creates the ticket via the Atlassian MCP or outputs a copy-paste markdown. TRIGGER whenever a Jira/QA ticket, bug report, regression, improvement or user story is mentioned, even without an explicit skill request. SKIP when only searching/reading existing Jira issues (use the Atlassian MCP search directly).
 ---
 
-# Redacteur Ticket QA
+# Redacteur Ticket
 
-Aide a rediger un ticket QA conforme au standard **3 Amigos** (QA + Produit), puis a le creer dans Jira. Le but : mener un court entretien pour collecter **tous** les champs requis selon le type de ticket, valider les regles d'or, puis creer le ticket via le MCP Atlassian (ou produire un markdown a copier si le MCP est indisponible).
+Aide a rediger un ticket conforme au standard **3 Amigos** (QA + Produit), puis a le creer dans Jira. Le but : mener un court entretien pour collecter **tous** les champs requis selon le type de ticket, valider les regles d'or, puis creer le ticket via le MCP Atlassian (ou produire un markdown a copier si le MCP est indisponible).
 
 Le skill est **generique** : aucune application, environnement ni cle de projet n'est code en dur. Les specificites de ton organisation vivent dans un **fichier de config local** (voir ci-dessous).
 
 ## Configuration locale (a lire en premier)
 
 Au demarrage, cherche un fichier de config, dans cet ordre :
-1. `.claude/ticket-qa.config.json` a la racine du projet courant ;
-2. `~/.claude/ticket-qa.config.json` (niveau utilisateur).
+1. `.claude/ticket.config.json` a la racine du projet courant ;
+2. `~/.claude/ticket.config.json` (niveau utilisateur).
 
 S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`, `environments` avec nom + URL) et optionnellement le **site Jira**. Utilise ces valeurs pour pre-remplir l'entretien (proposer la liste d'apps, deduire l'URL d'environnement et la cle de projet) au lieu de les redemander.
 
-Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos a l'utilisateur, et propose-lui de creer le fichier a partir du modele `assets/ticket-qa.config.example.json`. Ne jamais inventer d'URL ni de cle de projet.
+Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos a l'utilisateur, et propose-lui de creer le fichier a partir du modele `assets/ticket.config.example.json`. Ne jamais inventer d'URL ni de cle de projet.
 
 Le schema du fichier est documente dans `references/template-reference.md` § `<config_schema>`.
 
@@ -87,4 +87,4 @@ Si le MCP Atlassian est indisponible, ne pas bloquer : produire le ticket comple
 | Besoin | Reference |
 |---|---|
 | Template detaille, matrice des champs, mapping tag->type, squelette markdown, exemples, schema du fichier de config | `references/template-reference.md` |
-| Modele de fichier de config a copier | `assets/ticket-qa.config.example.json` |
+| Modele de fichier de config a copier | `assets/ticket.config.example.json` |

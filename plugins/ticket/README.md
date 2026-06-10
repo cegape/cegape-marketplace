@@ -1,12 +1,12 @@
-# ticket-qa
+# ticket
 
-Plugin Claude Code qui aide à rédiger des **tickets QA conformes au standard 3 Amigos** (QA + Produit), puis à les créer dans Jira.
+Plugin Claude Code qui aide à rédiger des **tickets conformes au standard 3 Amigos** (QA + Produit), puis à les créer dans Jira.
 
 Le plugin est **générique** : aucune application, environnement ni clé de projet n'est codé en dur. Les spécificités de votre organisation vivent dans un **fichier de config local** — rien de sensible n'est jamais publié.
 
 ## Pourquoi
 
-Un ticket QA mal rédigé (tag manquant, pas de chemin d'accès, comportement attendu absent) fait perdre du temps à toute l'équipe. Ce plugin encode le template validé : il mène un court entretien pour collecter **tous** les champs requis selon le type de ticket, valide les règles d'or, puis crée le ticket via le MCP Atlassian — ou produit un markdown prêt à coller si le MCP n'est pas disponible.
+Un ticket mal rédigé (tag manquant, pas de chemin d'accès, comportement attendu absent) fait perdre du temps à toute l'équipe. Ce plugin encode le template validé : il mène un court entretien pour collecter **tous** les champs requis selon le type de ticket, valide les règles d'or, puis crée le ticket via le MCP Atlassian — ou produit un markdown prêt à coller si le MCP n'est pas disponible.
 
 ## Les 4 types de tickets
 
@@ -26,7 +26,7 @@ Les champs collectés dépendent du type : `Comportement constaté/attendu` pour
 ```bash
 claude plugin marketplace add https://github.com/cegape/cegape-marketplace.git
 claude plugin marketplace update
-claude plugin install ticket-qa@cegape-marketplace --scope user
+claude plugin install ticket@cegape-marketplace --scope user
 ```
 
 ## Configuration (recommandé)
@@ -36,14 +36,14 @@ Pour que le skill connaisse vos applications, environnements et clés de projet 
 ```bash
 # Copiez le modèle fourni par le plugin vers votre projet…
 mkdir -p .claude
-cp <plugin>/skills/redacteur-ticket-qa/assets/ticket-qa.config.example.json \
-   .claude/ticket-qa.config.json
+cp <plugin>/skills/redacteur-ticket/assets/ticket.config.example.json \
+   .claude/ticket.config.json
 # …puis remplacez les valeurs d'exemple par celles de votre organisation.
 ```
 
 Emplacements reconnus (ordre de recherche) :
-1. `.claude/ticket-qa.config.json` (racine du projet)
-2. `~/.claude/ticket-qa.config.json` (niveau utilisateur)
+1. `.claude/ticket.config.json` (racine du projet)
+2. `~/.claude/ticket.config.json` (niveau utilisateur)
 
 Schéma :
 
@@ -101,13 +101,13 @@ Crée une amélioration : ajouter un export PDF sur le bulletin de paie
 ## Fichiers
 
 ```
-ticket-qa/
+ticket/
 ├── .claude-plugin/plugin.json
 └── skills/
-    └── redacteur-ticket-qa/
+    └── redacteur-ticket/
         ├── SKILL.md                            # Expertise : config, workflow, règles, mapping Jira
         ├── assets/
-        │   └── ticket-qa.config.example.json   # Modèle de config à copier (valeurs fictives)
+        │   └── ticket.config.example.json   # Modèle de config à copier (valeurs fictives)
         └── references/
             └── template-reference.md           # Template, matrice, mapping, squelette, exemples, schéma config
 ```
