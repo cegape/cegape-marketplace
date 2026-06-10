@@ -40,6 +40,8 @@ Pour que le skill connaisse vos applications, environnements et clés de projet 
 /ticket:config --user     # crée ~/.claude/ticket.config.json (tous vos projets)
 ```
 
+> 📖 Documentation détaillée de la commande : [docs/config-command.md](docs/config-command.md).
+
 **Voie manuelle** — copier le modèle et l'éditer :
 
 ```bash
@@ -113,6 +115,8 @@ ticket/
 ├── .claude-plugin/plugin.json
 ├── commands/
 │   └── config.md                           # /ticket:config — crée le fichier de config local
+├── docs/
+│   └── config-command.md                   # doc détaillée de /ticket:config
 └── skills/
     └── redacteur-ticket/
         ├── SKILL.md                            # Expertise : config, workflow, règles, mapping Jira
