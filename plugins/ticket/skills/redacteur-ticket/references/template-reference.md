@@ -18,11 +18,7 @@ Emplacement (ordre de recherche) : `.claude/ticket.config.json` (projet) puis
     {
       "name": "MonApp",                 // nom affiche de l'application
       "jiraProjectKey": "APP",          // cle de projet Jira par defaut pour cette app
-      "environments": [
-        { "name": "Recette",    "url": "https://recette.monapp.example" },
-        { "name": "Preprod",    "url": "https://preprod.monapp.example" },
-        { "name": "Production", "url": "https://monapp.example" }
-      ]
+      "environments": ["Recette", "Preprod", "Production"]  // NOMS seulement, sans URL
     }
   ],
   "jira": { "site": "monorg.atlassian.net" }   // optionnel : cible le bon site Atlassian
@@ -30,11 +26,13 @@ Emplacement (ordre de recherche) : `.claude/ticket.config.json` (projet) puis
 ```
 
 Regles d'usage :
-- Si la config existe, proposer la liste des `applications`, pre-remplir l'URL d'environnement
-  choisie et la `jiraProjectKey` correspondante.
+- Si la config existe, proposer la liste des `applications`, pre-remplir la `jiraProjectKey`
+  correspondante et proposer le **nom** d'environnement parmi `environments`.
+- **Pas d'URL en config** : l'adresse d'environnement change tout le temps (generee a la MR).
+  Elle est **demandee a l'utilisateur** au moment de rediger le ticket, jamais stockee.
 - `jira.site` est optionnel : sans lui, resoudre le site via `getAccessibleAtlassianResources`.
 - Si la config est absente, demander ces infos a l'utilisateur et proposer de creer le fichier
-  depuis le modele. Ne jamais inventer d'URL ni de cle de projet.
+  depuis le modele. Ne jamais inventer de cle de projet.
 </config_schema>
 
 ---
@@ -48,8 +46,9 @@ Structure commune a tous les types. Les sections marquees *(conditionnel)* ne s'
 `[Bug]` / `[Regression]` / `[Amelioration]` / `[US]` — titre court et precis — `<App>`
 
 ### ENVIRONNEMENT
-Lien URL ou nom de l'environnement (Recette / Preprod / Production) + version.
-Si la config fournit l'app, reprendre l'URL de l'environnement choisi.
+Nom de l'environnement (Recette / Preprod / Production) + **adresse** + version.
+Proposer le nom depuis la config si dispo, mais **demander l'adresse** a l'utilisateur :
+elle change tout le temps (generee a la MR) et n'est jamais stockee en config.
 
 ### CHEMIN D'ACCES
 Fil d'Ariane fonctionnel. Ex : `Menu -> Sous-menu -> Ecran`.

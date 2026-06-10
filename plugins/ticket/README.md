@@ -63,17 +63,16 @@ Schéma :
     {
       "name": "MonApp",
       "jiraProjectKey": "APP",
-      "environments": [
-        { "name": "Recette",    "url": "https://recette.monapp.example" },
-        { "name": "Production", "url": "https://monapp.example" }
-      ]
+      "environments": ["Recette", "Préprod", "Production"]
     }
   ],
   "jira": { "site": "monorg.atlassian.net" }
 }
 ```
 
-> ⚠️ Ce fichier contient des informations internes (URLs d'environnement, site Jira). Gardez-le **local** ou dans un dépôt privé — ne le commitez jamais dans un dépôt public.
+> 💡 **Pas d'URL d'environnement en config** : l'adresse change tout le temps (générée à la MR), elle est demandée au moment de créer le ticket. `environments` ne liste que les **noms**.
+
+> ⚠️ Ce fichier contient des informations internes (noms d'applications, clés de projet, site Jira). Gardez-le **local** ou dans un dépôt privé — ne le commitez jamais dans un dépôt public.
 
 Sans fichier de config, le plugin reste pleinement fonctionnel : il demande ces informations pendant l'entretien et propose de créer le fichier.
 

@@ -19,7 +19,7 @@ claude plugin install ticket@cegape-marketplace --scope user
 
 | Plugin | Description | Version |
 |--------|-------------|---------|
-| [ticket](plugins/ticket/) | Rédacteur de tickets (3 Amigos) : entretien guidé, validation, création via le MCP Atlassian ou markdown. Spécifiques (apps, environnements, clés Jira) déportés dans un fichier de config local | 0.2.0 |
+| [ticket](plugins/ticket/) | Rédacteur de tickets (3 Amigos) : entretien guidé, validation, création via le MCP Atlassian ou markdown. Spécifiques (apps, environnements, clés Jira) déportés dans un fichier de config local | 0.3.0 |
 
 ## Gestion des plugins
 

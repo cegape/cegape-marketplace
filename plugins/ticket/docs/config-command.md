@@ -26,7 +26,7 @@ Le skill cherche ces deux emplacements dans cet ordre : **projet** puis **utilis
 
 1. **Emplacement cible** — déterminé selon `--user`.
 2. **Pas d'écrasement aveugle** — si un fichier existe déjà, la commande le lit, l'affiche, et propose d'**ajouter une application**, de **modifier** une valeur ou de **repartir de zéro**. Aucune écriture sans accord.
-3. **Entretien** — pour chaque application : `name`, `jiraProjectKey`, et un ou plusieurs `environments` (`name` + `url`). Puis, optionnellement, le site Jira (`jira.site`).
+3. **Entretien** — pour chaque application : `name`, `jiraProjectKey`, et la liste des **noms** d'`environments` (sans URL). Puis, optionnellement, le site Jira (`jira.site`). Les adresses d'environnement ne sont pas demandées ici (saisies au moment du ticket).
 4. **Écriture** — crée le dossier `.claude/` si besoin et écrit un JSON valide, indenté.
 5. **Confirmation** — récapitule les applications configurées et rappelle de garder le fichier local.
 
@@ -40,11 +40,7 @@ Exemple de fichier produit :
     {
       "name": "Facturation",
       "jiraProjectKey": "FACT",
-      "environments": [
-        { "name": "Recette",    "url": "https://recette.facturation.example" },
-        { "name": "Préprod",    "url": "https://preprod.facturation.example" },
-        { "name": "Production", "url": "https://facturation.example" }
-      ]
+      "environments": ["Recette", "Préprod", "Production"]
     }
   ],
   "jira": { "site": "monorg.atlassian.net" }
@@ -55,13 +51,14 @@ Exemple de fichier produit :
 |---|:---:|---|
 | `applications[].name` | ✓ | Nom affiché de l'application |
 | `applications[].jiraProjectKey` | ✓ | Clé de projet Jira par défaut (ex. `FACT`) |
-| `applications[].environments[].name` | ✓ | Nom de l'environnement (Recette, Préprod, Production…) |
-| `applications[].environments[].url` | ✓ | URL de l'environnement |
+| `applications[].environments[]` | — | **Noms** d'environnements standard (ex. `Recette`, `Production`) — sans URL |
 | `jira.site` | — | Site Atlassian (ex. `monorg.atlassian.net`). Sans lui, le site est résolu via le MCP Atlassian |
+
+> 💡 **Pas d'URL d'environnement en config.** L'adresse change tout le temps (générée à la MR) : elle est demandée au moment de créer le ticket, jamais stockée ici. La config ne sert qu'à pré-remplir l'application, la clé de projet et le **nom** d'environnement.
 
 ## ⚠️ Sécurité
 
-Ce fichier contient des informations internes (URLs d'environnement, site Jira). **Gardez-le local ou dans un dépôt privé — ne le commitez jamais dans un dépôt public.** Le `.gitignore` de ce marketplace ignore déjà `ticket.config.json`.
+Ce fichier contient des informations internes (noms d'applications, clés de projet, site Jira). **Gardez-le local ou dans un dépôt privé — ne le commitez jamais dans un dépôt public.** Le `.gitignore` de ce marketplace ignore déjà `ticket.config.json`.
 
 ## Voir aussi
 

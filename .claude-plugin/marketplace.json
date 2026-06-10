@@ -14,7 +14,7 @@
       "name": "ticket",
       "source": "./plugins/ticket",
       "description": "Redacteur de tickets (standard 3 Amigos) : entretien guide, validation des regles d'or, creation via le MCP Atlassian ou markdown. Applications, environnements et cles de projet definis dans un fichier de config local.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": { "name": "CEGAPE" },
       "category": "productivity",
       "tags": ["jira", "ticket", "qa", "3-amigos", "user-story", "bug"]

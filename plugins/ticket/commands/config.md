@@ -32,7 +32,7 @@ Collecter, en regroupant les questions :
 1. **Applications** (au moins une). Pour chacune :
    - `name` : nom affiché de l'application (ex. « MonApp ») ;
    - `jiraProjectKey` : clé de projet Jira par défaut (ex. « APP ») ;
-   - `environments` : une ou plusieurs entrées `{ name, url }` (ex. Recette / Préprod / Production avec leurs URLs).
+   - `environments` : la liste des **noms** d'environnements seulement (ex. `["Recette", "Préprod", "Production"]`). **Ne pas demander d'URL** : l'adresse change tout le temps (générée à la MR) et sera saisie au moment de créer le ticket, pas stockée ici.
 2. **Site Jira** (optionnel) : `jira.site` (ex. `monorg.atlassian.net`). Si l'utilisateur ne le fournit pas, omettre la clé `jira` — le skill résoudra le site via `getAccessibleAtlassianResources`.
 
 Ne rien inventer : si une valeur manque, la demander. Proposer de réutiliser les noms d'environnements standard (Recette, Préprod, Production) mais laisser l'utilisateur libre.
@@ -47,10 +47,7 @@ Construire le JSON selon ce schéma :
     {
       "name": "MonApp",
       "jiraProjectKey": "APP",
-      "environments": [
-        { "name": "Recette", "url": "https://recette.monapp.example" },
-        { "name": "Production", "url": "https://monapp.example" }
-      ]
+      "environments": ["Recette", "Préprod", "Production"]
     }
   ],
   "jira": { "site": "monorg.atlassian.net" }
@@ -65,5 +62,5 @@ Puis :
 
 Après écriture :
 - afficher le chemin du fichier créé et un récapitulatif des applications configurées ;
-- rappeler que ce fichier contient des informations internes (URLs d'environnement, site Jira) : **le garder local ou dans un dépôt privé, ne jamais le commiter dans un dépôt public** (le `.gitignore` du marketplace l'ignore déjà) ;
-- indiquer que le plugin l'utilisera automatiquement : il suffit désormais de demander « crée un ticket… » pour que les applications et environnements soient pré-remplis.
+- rappeler que ce fichier contient des informations internes (noms d'applications, clés de projet Jira, site Jira) : **le garder local ou dans un dépôt privé, ne jamais le commiter dans un dépôt public** (le `.gitignore` du marketplace l'ignore déjà) ;
+- indiquer que le plugin l'utilisera automatiquement : il suffit désormais de demander « crée un ticket… » pour que l'application, la clé de projet et les noms d'environnement soient pré-remplis (l'adresse de l'environnement restera demandée à chaque ticket).
