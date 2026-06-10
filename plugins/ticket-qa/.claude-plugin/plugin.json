@@ -5,7 +5,7 @@
   "author": {
     "name": "CEGAPE"
   },
-  "repository": "https://github.com/cegape/ticket-qa-marketplace",
+  "repository": "https://github.com/cegape/cegape-marketplace",
   "license": "MIT",
   "keywords": ["jira", "ticket", "qa", "3-amigos", "user-story", "bug"]
 }

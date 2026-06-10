@@ -24,9 +24,9 @@ Les champs collectés dépendent du type : `Comportement constaté/attendu` pour
 ## Installation
 
 ```bash
-claude plugin marketplace add https://github.com/cegape/ticket-qa-marketplace.git
+claude plugin marketplace add https://github.com/cegape/cegape-marketplace.git
 claude plugin marketplace update
-claude plugin install ticket-qa@ticket-qa-marketplace --scope user
+claude plugin install ticket-qa@cegape-marketplace --scope user
 ```
 
 ## Configuration (recommandé)
