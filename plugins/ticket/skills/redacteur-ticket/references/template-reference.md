@@ -9,8 +9,11 @@ valeur en dur. Charge la section utile selon ce que tu rediges.
 <config_schema>
 ## Schema du fichier de config
 
-Emplacement (ordre de recherche) : `.claude/ticket.config.json` (projet) puis
-`~/.claude/ticket.config.json` (utilisateur). Modele : `assets/ticket.config.example.json`.
+Emplacement (ordre de recherche, chemin resolu selon l'OS) :
+- **Projet** : `.claude/ticket.config.json` (sous Windows : `.claude\ticket.config.json`) ;
+- **Utilisateur** : `~/.claude/ticket.config.json` sous macOS/Linux, `%USERPROFILE%\.claude\ticket.config.json` sous Windows.
+
+Modele : `assets/ticket.config.example.json`.
 
 ```jsonc
 {

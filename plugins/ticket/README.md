@@ -51,9 +51,14 @@ cp <plugin>/skills/redacteur-ticket/assets/ticket.config.example.json \
 # …puis remplacez les valeurs d'exemple par celles de votre organisation.
 ```
 
-Emplacements reconnus (ordre de recherche) :
-1. `.claude/ticket.config.json` (racine du projet)
-2. `~/.claude/ticket.config.json` (niveau utilisateur)
+Emplacements reconnus (ordre de recherche), résolus selon l'OS — utile depuis Claude Cowork sur Windows ou macOS :
+
+| OS | Projet | Utilisateur |
+|---|---|---|
+| macOS / Linux | `.claude/ticket.config.json` | `~/.claude/ticket.config.json` |
+| Windows | `.claude\ticket.config.json` | `%USERPROFILE%\.claude\ticket.config.json` |
+
+La commande `/ticket:config` résout automatiquement le bon chemin.
 
 Schéma :
 

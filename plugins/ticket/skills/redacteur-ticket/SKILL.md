@@ -11,9 +11,9 @@ Le skill est **generique** : aucune application, environnement ni cle de projet 
 
 ## Configuration locale (a lire en premier)
 
-Au demarrage, cherche un fichier de config, dans cet ordre :
-1. `.claude/ticket.config.json` a la racine du projet courant ;
-2. `~/.claude/ticket.config.json` (niveau utilisateur).
+Au demarrage, cherche un fichier de config, dans cet ordre (resoudre le chemin selon l'OS — beaucoup d'utilisateurs sont sur Windows ou macOS via Claude Cowork) :
+1. **Projet** : `.claude/ticket.config.json` a la racine du projet courant (`.claude\ticket.config.json` sous Windows) ;
+2. **Utilisateur** : `~/.claude/ticket.config.json` sous macOS/Linux, ou `%USERPROFILE%\.claude\ticket.config.json` sous Windows (ex. `C:\Users\<Nom>\.claude\ticket.config.json`).
 
 S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`, et `environments` = noms standard **sans URL**) et optionnellement le **site Jira**. Utilise ces valeurs pour pre-remplir l'entretien (proposer la liste d'apps, proposer le nom d'environnement, deduire la cle de projet) au lieu de les redemander.
 

@@ -17,17 +17,26 @@ Sans config, le plugin reste fonctionnel : il demande ces informations au moment
 
 | Argument | Effet |
 |---|---|
-| *(aucun)* | Écrit `.claude/ticket.config.json` à la racine du projet courant |
-| `--user` | Écrit `~/.claude/ticket.config.json` (config valable pour tous vos projets) |
+| *(aucun)* | Écrit le fichier de config **projet** à la racine du projet courant |
+| `--user` | Écrit le fichier de config **utilisateur** (valable pour tous vos projets) |
 
 Le skill cherche ces deux emplacements dans cet ordre : **projet** puis **utilisateur**.
 
+### Chemins selon le système d'exploitation
+
+La commande résout automatiquement le bon chemin (utile depuis Claude Cowork sur Windows ou macOS) :
+
+| OS | Projet (défaut) | Utilisateur (`--user`) |
+|---|---|---|
+| macOS / Linux | `.claude/ticket.config.json` | `~/.claude/ticket.config.json` |
+| Windows | `.claude\ticket.config.json` | `%USERPROFILE%\.claude\ticket.config.json` |
+
 ## Déroulé
 
-1. **Emplacement cible** — déterminé selon `--user`.
+1. **Emplacement cible** — déterminé selon `--user` **et l'OS** (chemins macOS/Linux vs Windows, voir tableau ci-dessus).
 2. **Pas d'écrasement aveugle** — si un fichier existe déjà, la commande le lit, l'affiche, et propose d'**ajouter une application**, de **modifier** une valeur ou de **repartir de zéro**. Aucune écriture sans accord.
 3. **Entretien** — pour chaque application : `name`, `jiraProjectKey`, et la liste des **noms** d'`environments` (sans URL). Puis, optionnellement, le site Jira (`jira.site`). Les adresses d'environnement ne sont pas demandées ici (saisies au moment du ticket).
-4. **Écriture** — crée le dossier `.claude/` si besoin et écrit un JSON valide, indenté.
+4. **Écriture** — écrit un JSON valide et indenté (l'outil d'écriture crée le dossier `.claude/` parent si besoin, sur tout OS).
 5. **Confirmation** — récapitule les applications configurées et rappelle de garder le fichier local.
 
 ## Résultat
