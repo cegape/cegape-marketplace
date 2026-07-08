@@ -1,10 +1,12 @@
 # Commande `/ticket:config`
 
-Configure le plugin **ticket** en créant (ou en mettant à jour) le fichier de config local qui déporte les spécificités de votre organisation — applications, environnements, clés de projet Jira — hors du plugin. Rien d'interne n'est jamais publié : le fichier reste sur votre poste.
+Configure le plugin **ticket** en créant (ou en mettant à jour) le fichier de config local qui déporte les spécificités de votre organisation — applications, clés de projet Jira — hors du plugin. Rien d'interne n'est jamais publié : le fichier reste sur votre poste.
 
 ## Pourquoi
 
-Le skill `redacteur-ticket` lit ce fichier pour **pré-remplir l'entretien** (proposer la liste de vos applications, déduire l'URL de l'environnement choisi et la clé de projet Jira) au lieu de vous redemander ces informations à chaque ticket. Cette commande construit ce fichier pour vous, via un court entretien guidé.
+Le skill `redacteur-ticket` lit ce fichier pour **pré-remplir l'entretien** (proposer la liste de vos applications et déduire la clé de projet Jira) au lieu de vous redemander ces informations à chaque ticket. Cette commande construit ce fichier pour vous, via un court entretien guidé.
+
+> **L'environnement n'est pas configuré ici.** Il dépend du contexte de chaque ticket (une même application peut être en Recette, Préprod ou Production selon le cas signalé) : son nom **et** son adresse sont demandés au moment de rédiger le ticket, jamais stockés dans la config.
 
 Sans config, le plugin reste fonctionnel : il demande ces informations au moment de créer un ticket.
 
@@ -35,7 +37,7 @@ La commande résout automatiquement le bon chemin (utile depuis Claude Cowork su
 
 1. **Emplacement cible** — déterminé selon `--user` **et l'OS** (chemins macOS/Linux vs Windows, voir tableau ci-dessus).
 2. **Pas d'écrasement aveugle** — si un fichier existe déjà, la commande le lit, l'affiche, et propose d'**ajouter une application**, de **modifier** une valeur ou de **repartir de zéro**. Aucune écriture sans accord.
-3. **Entretien** — pour chaque application : `name`, `jiraProjectKey`, et la liste des **noms** d'`environments` (sans URL). Puis, optionnellement, le site Jira (`jira.site`). Les adresses d'environnement ne sont pas demandées ici (saisies au moment du ticket).
+3. **Entretien** — pour chaque application : `name` et `jiraProjectKey`. Puis, optionnellement, le site Jira (`jira.site`). L'environnement n'est pas demandé ici (nom + adresse saisis au moment du ticket, selon son contexte).
 4. **Écriture** — écrit un JSON valide et indenté (l'outil d'écriture crée le dossier `.claude/` parent si besoin, sur tout OS).
 5. **Confirmation** — récapitule les applications configurées et rappelle de garder le fichier local.
 
@@ -48,8 +50,7 @@ Exemple de fichier produit :
   "applications": [
     {
       "name": "Facturation",
-      "jiraProjectKey": "FACT",
-      "environments": ["Recette", "Préprod", "Production"]
+      "jiraProjectKey": "FACT"
     }
   ],
   "jira": { "site": "monorg.atlassian.net" }
@@ -60,10 +61,9 @@ Exemple de fichier produit :
 |---|:---:|---|
 | `applications[].name` | ✓ | Nom affiché de l'application |
 | `applications[].jiraProjectKey` | ✓ | Clé de projet Jira par défaut (ex. `FACT`) |
-| `applications[].environments[]` | — | **Noms** d'environnements standard (ex. `Recette`, `Production`) — sans URL |
 | `jira.site` | — | Site Atlassian (ex. `monorg.atlassian.net`). Sans lui, le site est résolu via le MCP Atlassian |
 
-> 💡 **Pas d'URL d'environnement en config.** L'adresse change tout le temps (générée à la MR) : elle est demandée au moment de créer le ticket, jamais stockée ici. La config ne sert qu'à pré-remplir l'application, la clé de projet et le **nom** d'environnement.
+> 💡 **L'environnement n'est pas en config.** Il dépend du contexte de chaque ticket : son nom **et** son adresse sont demandés au moment de créer le ticket, jamais stockés ici. La config ne sert qu'à pré-remplir l'application et la clé de projet.
 
 ## ⚠️ Sécurité
 

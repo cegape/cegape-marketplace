@@ -1,6 +1,6 @@
 ---
 name: Redacteur Ticket
-description: This skill should be used when the user wants to write or create a Jira / QA ticket following the 3-Amigos standard, or asks to "creer un ticket Jira", "rediger un ticket", "creer un bug", "creer une US", "creer une user story", "remonter une anomalie", "remonter une regression", "creer une amelioration", or mentions a tag "[Bug]", "[Regression]", "[Amelioration]", "[US]". The skill reads an optional local config (applications, environnements, cles de projet Jira), interviews the user to collect every required field of the 3-Amigos QA template (titre tagge, environnement, chemin d'acces, description, etapes, comportement constate/attendu, criteres d'acceptance, captures), then creates the ticket via the Atlassian MCP or outputs a copy-paste markdown. TRIGGER whenever a Jira/QA ticket, bug report, regression, improvement or user story is mentioned, even without an explicit skill request. SKIP when only searching/reading existing Jira issues (use the Atlassian MCP search directly).
+description: This skill should be used when the user wants to write or create a Jira / QA ticket following the 3-Amigos standard, or asks to "creer un ticket Jira", "rediger un ticket", "creer un bug", "creer une US", "creer une user story", "remonter une anomalie", "remonter une regression", "creer une amelioration", or mentions a tag "[Bug]", "[Regression]", "[Amelioration]", "[US]". The skill reads an optional local config (applications, cles de projet Jira), interviews the user to collect every required field of the 3-Amigos QA template (titre tagge, environnement, chemin d'acces, description, etapes, comportement constate/attendu, criteres d'acceptance, captures), then creates the ticket via the Atlassian MCP or outputs a copy-paste markdown. TRIGGER whenever a Jira/QA ticket, bug report, regression, improvement or user story is mentioned, even without an explicit skill request. SKIP when only searching/reading existing Jira issues (use the Atlassian MCP search directly).
 ---
 
 # Redacteur Ticket
@@ -15,9 +15,9 @@ Au demarrage, cherche un fichier de config, dans cet ordre (resoudre le chemin s
 1. **Projet** : `.claude/ticket.config.json` a la racine du projet courant (`.claude\ticket.config.json` sous Windows) ;
 2. **Utilisateur** : `~/.claude/ticket.config.json` sous macOS/Linux, ou `%USERPROFILE%\.claude\ticket.config.json` sous Windows (ex. `C:\Users\<Nom>\.claude\ticket.config.json`).
 
-S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`, et `environments` = noms standard **sans URL**) et optionnellement le **site Jira**. Utilise ces valeurs pour pre-remplir l'entretien (proposer la liste d'apps, proposer le nom d'environnement, deduire la cle de projet) au lieu de les redemander.
+S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`) et optionnellement le **site Jira**. Utilise ces valeurs pour pre-remplir l'entretien (proposer la liste d'apps, deduire la cle de projet) au lieu de les redemander.
 
-**Les URLs d'environnement ne sont PAS en config** : l'adresse change tout le temps (generee a la MR). Demande-la a l'utilisateur au moment de rediger le ticket — propose le nom d'environnement depuis la config, mais l'adresse precise est saisie a chaque fois.
+**L'environnement n'est PAS en config** : il depend du contexte de chaque ticket (une meme app peut etre en Recette, Preprod ou Production selon le cas signale). Demande son **nom ET son adresse** a l'utilisateur au moment de rediger le ticket ; ne les stocke jamais.
 
 Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos a l'utilisateur, et propose-lui de lancer la commande **`/ticket:config`** (entretien guide qui ecrit le fichier) ou de le creer a partir du modele `assets/ticket.config.example.json`. Ne jamais inventer d'URL ni de cle de projet.
 
@@ -49,9 +49,9 @@ Le detail complet du template, les exemples et le squelette markdown de sortie v
 
 ## Workflow
 
-1. **Charger la config** (voir ci-dessus) pour connaitre apps / environnements / cles de projet.
+1. **Charger la config** (voir ci-dessus) pour connaitre apps / cles de projet.
 2. **Determiner le type** — deduire le tag du besoin. En cas de doute, demander (anomalie -> Bug ; ca marchait avant -> Regression ; evolution -> Amelioration ; nouvelle fonctionnalite -> US).
-3. **Mener l'entretien** — collecter les champs manquants pour ce type. Si la config liste les apps, proposer le choix et pre-remplir la cle de projet ; proposer le **nom** d'environnement depuis la config mais **demander l'adresse** (URL generee a la MR). Ne **jamais** redemander une info deja fournie ; regrouper les questions.
+3. **Mener l'entretien** — collecter les champs manquants pour ce type. Si la config liste les apps, proposer le choix et pre-remplir la cle de projet ; **demander l'environnement** (nom + adresse), qui depend du contexte du ticket. Ne **jamais** redemander une info deja fournie ; regrouper les questions.
 4. **Valider les regles d'or** (voir plus bas).
 5. **Composer le ticket** — squelette de `references/template-reference.md`. Titre = `[Tag] <titre court precis> — <App>`.
 6. **Restituer** — proposer le ticket formate, demander confirmation, puis creer dans Jira (voir « Creation Jira »). Sinon, fallback markdown.

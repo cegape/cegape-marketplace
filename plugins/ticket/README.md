@@ -31,7 +31,7 @@ claude plugin install ticket@cegape-marketplace --scope user
 
 ## Configuration (recommandé)
 
-Pour que le skill connaisse vos applications, environnements et clés de projet Jira — et évite de vous les redemander — créez un fichier de config **local**.
+Pour que le skill connaisse vos applications et clés de projet Jira — et évite de vous les redemander — créez un fichier de config **local**.
 
 **Voie recommandée — la commande dédiée** (entretien guidé, écrit le fichier pour vous) :
 
@@ -67,15 +67,14 @@ Schéma :
   "applications": [
     {
       "name": "MonApp",
-      "jiraProjectKey": "APP",
-      "environments": ["Recette", "Préprod", "Production"]
+      "jiraProjectKey": "APP"
     }
   ],
   "jira": { "site": "monorg.atlassian.net" }
 }
 ```
 
-> 💡 **Pas d'URL d'environnement en config** : l'adresse change tout le temps (générée à la MR), elle est demandée au moment de créer le ticket. `environments` ne liste que les **noms**.
+> 💡 **L'environnement n'est pas en config** : il dépend du contexte de chaque ticket (Recette, Préprod ou Production selon le cas). Son nom **et** son adresse sont demandés au moment de créer le ticket.
 
 > ⚠️ Ce fichier contient des informations internes (noms d'applications, clés de projet, site Jira). Gardez-le **local** ou dans un dépôt privé — ne le commitez jamais dans un dépôt public.
 
@@ -98,9 +97,9 @@ Crée une amélioration : ajouter un export PDF sur le bulletin de paie
 
 ### Déroulé
 
-1. **Config chargée** — apps / environnements / clés de projet lus depuis le fichier local s'il existe.
+1. **Config chargée** — apps / clés de projet lus depuis le fichier local s'il existe.
 2. **Type détecté** — le skill déduit le tag ; en cas de doute, il demande.
-3. **Entretien ciblé** — il ne demande que les champs **manquants** selon le type, regroupés (jamais une info déjà fournie ; app et environnement pré-remplis depuis la config).
+3. **Entretien ciblé** — il ne demande que les champs **manquants** selon le type, regroupés (jamais une info déjà fournie ; app pré-remplie depuis la config, environnement demandé à chaque ticket).
 4. **Validation des règles d'or** — tag en tête de titre, environnement + chemin d'accès, version pour une régression, captures pour Bug/Régression, trio Given/When/Then pour Amélioration/US.
 5. **Restitution** — après confirmation, création dans Jira (`cloudId`, clé de projet et type d'issue résolus dynamiquement) ou fallback markdown.
 

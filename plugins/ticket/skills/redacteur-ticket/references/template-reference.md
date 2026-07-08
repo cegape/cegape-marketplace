@@ -1,8 +1,9 @@
 # Reference — Template de Ticket (3 Amigos)
 
-Standard de redaction QA + Produit. Le skill est generique : les applications, environnements
-et cles de projet proviennent du fichier de config local (voir `<config_schema>`), jamais d'une
-valeur en dur. Charge la section utile selon ce que tu rediges.
+Standard de redaction QA + Produit. Le skill est generique : les applications et cles de projet
+proviennent du fichier de config local (voir `<config_schema>`), jamais d'une valeur en dur.
+L'environnement, lui, depend du contexte du ticket et n'est jamais en config. Charge la section
+utile selon ce que tu rediges.
 
 ---
 
@@ -20,8 +21,7 @@ Modele : `assets/ticket.config.example.json`.
   "applications": [
     {
       "name": "MonApp",                 // nom affiche de l'application
-      "jiraProjectKey": "APP",          // cle de projet Jira par defaut pour cette app
-      "environments": ["Recette", "Preprod", "Production"]  // NOMS seulement, sans URL
+      "jiraProjectKey": "APP"           // cle de projet Jira par defaut pour cette app
     }
   ],
   "jira": { "site": "monorg.atlassian.net" }   // optionnel : cible le bon site Atlassian
@@ -29,10 +29,11 @@ Modele : `assets/ticket.config.example.json`.
 ```
 
 Regles d'usage :
-- Si la config existe, proposer la liste des `applications`, pre-remplir la `jiraProjectKey`
-  correspondante et proposer le **nom** d'environnement parmi `environments`.
-- **Pas d'URL en config** : l'adresse d'environnement change tout le temps (generee a la MR).
-  Elle est **demandee a l'utilisateur** au moment de rediger le ticket, jamais stockee.
+- Si la config existe, proposer la liste des `applications` et pre-remplir la `jiraProjectKey`
+  correspondante.
+- **L'environnement n'est PAS en config** : il depend du contexte de chaque ticket (une meme app
+  peut etre en Recette, Preprod ou Production selon le cas). Son **nom et son adresse** sont
+  **demandes a l'utilisateur** au moment de rediger le ticket, jamais stockes.
 - `jira.site` est optionnel : sans lui, resoudre le site via `getAccessibleAtlassianResources`.
 - Si la config est absente, demander ces infos a l'utilisateur et proposer de creer le fichier
   depuis le modele. Ne jamais inventer de cle de projet.
@@ -50,8 +51,8 @@ Structure commune a tous les types. Les sections marquees *(conditionnel)* ne s'
 
 ### ENVIRONNEMENT
 Nom de l'environnement (Recette / Preprod / Production) + **adresse** + version.
-Proposer le nom depuis la config si dispo, mais **demander l'adresse** a l'utilisateur :
-elle change tout le temps (generee a la MR) et n'est jamais stockee en config.
+**Demander le nom ET l'adresse** a l'utilisateur : l'environnement depend du contexte du ticket
+et n'est jamais stocke en config (l'adresse change en plus tout le temps, generee a la MR).
 
 ### CHEMIN D'ACCES
 Fil d'Ariane fonctionnel. Ex : `Menu -> Sous-menu -> Ecran`.

@@ -1,15 +1,13 @@
 {
-  "_comment": "Copiez ce fichier vers .claude/ticket.config.json (a la racine de votre projet) ou ~/.claude/ticket.config.json, puis remplacez les valeurs d'exemple par celles de votre organisation. Ce fichier reste LOCAL et n'a pas vocation a etre commite dans un depot public. NB : on ne stocke PAS les URLs d'environnement ici (elles changent et sont generees a la MR) ; l'adresse est demandee au moment de creer le ticket. 'environments' ne liste que les noms standard.",
+  "_comment": "Copiez ce fichier vers .claude/ticket.config.json (a la racine de votre projet) ou ~/.claude/ticket.config.json, puis remplacez les valeurs d'exemple par celles de votre organisation. Ce fichier reste LOCAL et n'a pas vocation a etre commite dans un depot public. NB : on ne configure PAS l'environnement ici — il depend du contexte de chaque ticket (nom + adresse), il est demande au moment de creer le ticket.",
   "applications": [
     {
       "name": "MonApp",
-      "jiraProjectKey": "APP",
-      "environments": ["Recette", "Preprod", "Production"]
+      "jiraProjectKey": "APP"
     },
     {
       "name": "AutreApp",
-      "jiraProjectKey": "AUTR",
-      "environments": ["Recette", "Production"]
+      "jiraProjectKey": "AUTR"
     }
   ],
   "jira": {

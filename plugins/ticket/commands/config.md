@@ -1,12 +1,14 @@
 ---
-description: Configure le plugin ticket et cree le fichier de config local (applications, environnements, cles de projet Jira)
+description: Configure le plugin ticket et cree le fichier de config local (applications, cles de projet Jira)
 argument-hint: "[--user]"
 allowed-tools: Read, Write, Edit
 ---
 
 ## Tâche
 
-Construire, via un court entretien, le fichier de config local du plugin `ticket`, puis l'écrire sur disque. Ce fichier déporte les spécificités de l'organisation (applications, environnements, clés de projet Jira) hors du plugin — rien d'interne n'est jamais publié.
+Construire, via un court entretien, le fichier de config local du plugin `ticket`, puis l'écrire sur disque. Ce fichier déporte les spécificités de l'organisation (applications, clés de projet Jira) hors du plugin — rien d'interne n'est jamais publié.
+
+> **L'environnement n'est PAS en config.** Il dépend du contexte de chaque ticket (une même application peut être en Recette, Préprod ou Production selon le cas signalé) : son nom **et** son adresse sont demandés au moment de rédiger le ticket, jamais stockés ici.
 
 ### 1. Déterminer l'emplacement cible (selon l'OS)
 
@@ -38,11 +40,11 @@ Collecter, en regroupant les questions :
 
 1. **Applications** (au moins une). Pour chacune :
    - `name` : nom affiché de l'application (ex. « MonApp ») ;
-   - `jiraProjectKey` : clé de projet Jira par défaut (ex. « APP ») ;
-   - `environments` : la liste des **noms** d'environnements seulement (ex. `["Recette", "Préprod", "Production"]`). **Ne pas demander d'URL** : l'adresse change tout le temps (générée à la MR) et sera saisie au moment de créer le ticket, pas stockée ici.
+   - `jiraProjectKey` : clé de projet Jira par défaut (ex. « APP »).
+   - **Ne pas demander d'environnement** : il dépend du contexte du ticket (nom + adresse saisis au moment de la rédaction), il n'a pas sa place dans une config générale.
 2. **Site Jira** (optionnel) : `jira.site` (ex. `monorg.atlassian.net`). Si l'utilisateur ne le fournit pas, omettre la clé `jira` — le skill résoudra le site via `getAccessibleAtlassianResources`.
 
-Ne rien inventer : si une valeur manque, la demander. Proposer de réutiliser les noms d'environnements standard (Recette, Préprod, Production) mais laisser l'utilisateur libre.
+Ne rien inventer : si une valeur manque, la demander.
 
 ### 4. Composer et écrire le fichier
 
@@ -53,8 +55,7 @@ Construire le JSON selon ce schéma :
   "applications": [
     {
       "name": "MonApp",
-      "jiraProjectKey": "APP",
-      "environments": ["Recette", "Préprod", "Production"]
+      "jiraProjectKey": "APP"
     }
   ],
   "jira": { "site": "monorg.atlassian.net" }
@@ -70,4 +71,4 @@ Puis :
 Après écriture :
 - afficher le chemin du fichier créé et un récapitulatif des applications configurées ;
 - rappeler que ce fichier contient des informations internes (noms d'applications, clés de projet Jira, site Jira) : **le garder local ou dans un dépôt privé, ne jamais le commiter dans un dépôt public** (le `.gitignore` du marketplace l'ignore déjà) ;
-- indiquer que le plugin l'utilisera automatiquement : il suffit désormais de demander « crée un ticket… » pour que l'application, la clé de projet et les noms d'environnement soient pré-remplis (l'adresse de l'environnement restera demandée à chaque ticket).
+- indiquer que le plugin l'utilisera automatiquement : il suffit désormais de demander « crée un ticket… » pour que l'application et la clé de projet soient pré-remplies (l'environnement — nom et adresse — restera demandé à chaque ticket, selon son contexte).
