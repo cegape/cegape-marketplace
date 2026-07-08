@@ -6,7 +6,7 @@ Le plugin est **générique** : aucune application, environnement ni clé de pro
 
 ## Pourquoi
 
-Un ticket mal rédigé (tag manquant, pas de chemin d'accès, comportement attendu absent) fait perdre du temps à toute l'équipe. Ce plugin encode le template validé : il mène un court entretien pour collecter **tous** les champs requis selon le type de ticket, valide les règles d'or, puis crée le ticket via le MCP Atlassian — ou produit un markdown prêt à coller si le MCP n'est pas disponible.
+Un ticket mal rédigé (tag manquant, pas de chemin d'accès, comportement attendu absent) fait perdre du temps à toute l'équipe. Ce plugin encode le template validé : il **mène une conversation** — une question à la fois, au fil de l'eau, jamais un formulaire à remplir — pour collecter **tous** les champs requis selon le type de ticket, valide les règles d'or, puis crée le ticket via le MCP Atlassian — ou produit un markdown prêt à coller si le MCP n'est pas disponible.
 
 ## Les 4 types de tickets
 
@@ -98,8 +98,8 @@ Crée une amélioration : ajouter un export PDF sur le bulletin de paie
 ### Déroulé
 
 1. **Config chargée** — apps / clés de projet lus depuis le fichier local s'il existe.
-2. **Type détecté** — le skill déduit le tag ; en cas de doute, il demande.
-3. **Entretien ciblé** — il ne demande que les champs **manquants** selon le type, regroupés (jamais une info déjà fournie ; app pré-remplie depuis la config, environnement demandé à chaque ticket).
+2. **Type détecté** — le skill déduit le tag depuis votre demande ; en cas de doute, il demande.
+3. **Conversation au fil de l'eau** — le skill part de ce que vous avez déjà dit, puis pose **une question à la fois** (ou un petit groupe naturellement lié) pour combler les champs manquants selon le type. Il reformule et avance ; jamais de formulaire vide à compléter d'un coup. Une carte de choix n'apparaît que pour un vrai choix fermé (quelle appli, quel type si ambigu) ; l'app est pré-remplie depuis la config, l'environnement demandé à chaque ticket.
 4. **Validation des règles d'or** — tag en tête de titre, environnement + chemin d'accès, version pour une régression, captures pour Bug/Régression, trio Given/When/Then pour Amélioration/US.
 5. **Restitution** — après confirmation, création dans Jira (`cloudId`, clé de projet et type d'issue résolus dynamiquement) ou fallback markdown.
 

@@ -1,70 +1,69 @@
 ---
 name: Redacteur Ticket
-description: This skill should be used when the user wants to write or create a Jira / QA ticket following the 3-Amigos standard, or asks to "creer un ticket Jira", "rediger un ticket", "creer un bug", "creer une US", "creer une user story", "remonter une anomalie", "remonter une regression", "creer une amelioration", or mentions a tag "[Bug]", "[Regression]", "[Amelioration]", "[US]". The skill reads an optional local config (applications, cles de projet Jira), interviews the user to collect every required field of the 3-Amigos QA template (titre tagge, environnement, chemin d'acces, description, etapes, comportement constate/attendu, criteres d'acceptance, captures), then creates the ticket via the Atlassian MCP or outputs a copy-paste markdown. TRIGGER whenever a Jira/QA ticket, bug report, regression, improvement or user story is mentioned, even without an explicit skill request. SKIP when only searching/reading existing Jira issues (use the Atlassian MCP search directly).
+description: This skill should be used when the user wants to write or create a Jira / QA ticket following the 3-Amigos standard, or asks to "creer un ticket Jira", "rediger un ticket", "creer un bug", "creer une US", "creer une user story", "remonter une anomalie", "remonter une regression", "creer une amelioration", or mentions a tag "[Bug]", "[Regression]", "[Amelioration]", "[US]". The skill reads an optional local config (applications, cles de projet Jira), then mene une conversation guidee (un champ a la fois, jamais un formulaire) pour collecter tous les champs requis selon le type, valide les regles d'or, et cree le ticket via le MCP Atlassian ou produit un markdown a copier. TRIGGER whenever a Jira/QA ticket, bug report, regression, improvement or user story is mentioned, even without an explicit skill request. SKIP when only searching/reading existing Jira issues (use the Atlassian MCP search directly).
 ---
 
 # Redacteur Ticket
 
-Aide a rediger un ticket conforme au standard **3 Amigos** (QA + Produit), puis a le creer dans Jira. Le but : mener un court entretien pour collecter **tous** les champs requis selon le type de ticket, valider les regles d'or, puis creer le ticket via le MCP Atlassian (ou produire un markdown a copier si le MCP est indisponible).
+Aide a rediger un ticket conforme au standard **3 Amigos** (QA + Produit), puis a le creer dans Jira. Le coeur du skill est une **conversation** : tu discutes avec l'utilisateur pour collecter, **au fil de l'eau**, tous les champs requis selon le type de ticket — jamais en lui presentant un formulaire a remplir. Une fois les champs reunis et les regles d'or validees, tu crees le ticket via le MCP Atlassian (ou produis un markdown a copier si le MCP est indisponible).
 
-Le skill est **generique** : aucune application, environnement ni cle de projet n'est code en dur. Les specificites de ton organisation vivent dans un **fichier de config local** (voir ci-dessous).
+Le skill est **generique** : aucune application, environnement ni cle de projet n'est code en dur. Les specificites de l'organisation vivent dans un **fichier de config local** (voir ci-dessous).
 
-## Configuration locale (a lire en premier)
+## 1. Charger la config locale
 
 Au demarrage, cherche un fichier de config, dans cet ordre (resoudre le chemin selon l'OS — beaucoup d'utilisateurs sont sur Windows ou macOS via Claude Cowork) :
 1. **Projet** : `.claude/ticket.config.json` a la racine du projet courant (`.claude\ticket.config.json` sous Windows) ;
-2. **Utilisateur** : `~/.claude/ticket.config.json` sous macOS/Linux, ou `%USERPROFILE%\.claude\ticket.config.json` sous Windows (ex. `C:\Users\<Nom>\.claude\ticket.config.json`).
+2. **Utilisateur** : `~/.claude/ticket.config.json` sous macOS/Linux, ou `%USERPROFILE%\.claude\ticket.config.json` sous Windows.
 
-S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`) et optionnellement le **site Jira**. Utilise ces valeurs pour pre-remplir l'entretien (proposer la liste d'apps, deduire la cle de projet) au lieu de les redemander.
+S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`) et optionnellement le **site Jira**. Ces valeurs pre-remplissent la conversation (proposer la liste d'apps, deduire la cle de projet) au lieu d'etre redemandees.
 
-**L'environnement n'est PAS en config** : il depend du contexte de chaque ticket (une meme app peut etre en Recette, Preprod ou Production selon le cas signale). Demande son **nom ET son adresse** a l'utilisateur au moment de rediger le ticket ; ne les stocke jamais.
+**L'environnement n'est PAS en config** : il depend du contexte de chaque ticket (une meme app peut etre en Recette, Preprod ou Production selon le cas signale). Son **nom ET son adresse** se demandent pendant la conversation ; ne les stocke jamais.
 
-Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos a l'utilisateur, et propose-lui de lancer la commande **`/ticket:config`** (entretien guide qui ecrit le fichier) ou de le creer a partir du modele `assets/ticket.config.example.json`. Ne jamais inventer d'URL ni de cle de projet.
+Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos dans la conversation, et propose la commande **`/ticket:config`** (entretien guide qui ecrit le fichier) ou une creation depuis le modele `assets/ticket.config.example.json`. Ne jamais inventer d'URL ni de cle de projet.
 
 Le schema du fichier est documente dans `references/template-reference.md` § `<config_schema>`.
 
-## Les 4 types de tickets
+## 2. Les 4 types et leurs champs
 
-Chaque ticket commence **obligatoirement** par son tag dans le titre.
+Chaque ticket commence **obligatoirement** par son tag dans le titre. Deduire le type du besoin ; en cas de doute, le demander (anomalie -> Bug ; ca marchait avant -> Regression ; evolution -> Amelioration ; nouvelle fonctionnalite -> US).
 
-| Tag | Definition |
-|---|---|
-| `[Bug]` | Anomalie sur une fonctionnalite existante |
-| `[Regression]` | Fonctionnalite qui marchait et ne marche plus |
-| `[Amelioration]` | Evolution / optimisation d'une fonctionnalite existante |
-| `[US]` | Nouvelle fonctionnalite a developper (User Story) |
+| Tag | Definition | Champs specifiques requis |
+|---|---|---|
+| `[Bug]` | Anomalie sur une fonctionnalite existante | Comportement constate + attendu ; captures **obligatoires** |
+| `[Regression]` | Fonctionnalite qui marchait et ne marche plus | Comportement constate + attendu ; captures **obligatoires** ; **version ou ca marchait** |
+| `[Amelioration]` | Evolution / optimisation d'une fonctionnalite | Criteres d'acceptance (Given/When/Then) ; captures recommandees |
+| `[US]` | Nouvelle fonctionnalite a developper (User Story) | Criteres d'acceptance (Given/When/Then) |
 
-## Champs selon le type
+Champs **communs** a tous les types : Titre tagge, Environnement (nom + adresse), Chemin d'acces, Description, Etapes a reproduire.
 
-Champs **communs** toujours requis : Titre tagge, Environnement, Chemin d'acces, Description, Etapes a reproduire. Les autres dependent du type :
+Le detail du template, les exemples et le squelette markdown de sortie vivent dans `references/template-reference.md` — charge-le quand tu composes le ticket.
 
-| Type | Comportement constate + attendu | Criteres d'acceptance (Given/When/Then) | Captures d'ecran |
-|---|:---:|:---:|:---:|
-| `[Bug]` | ✓ obligatoire | — | ✓ obligatoire |
-| `[Regression]` | ✓ obligatoire | — | ✓ obligatoire |
-| `[Amelioration]` | — | ✓ obligatoire | recommande |
-| `[US]` | — | ✓ obligatoire | — |
+## 3. Mener la conversation (au fil de l'eau)
 
-Le detail complet du template, les exemples et le squelette markdown de sortie vivent dans `references/template-reference.md` — charge-le quand tu rediges.
+Tu **converses** pour reunir les champs manquants ; tu ne fais **pas** remplir un formulaire. Regles de conduite :
 
-## Workflow
+- **Pars de ce qui est deja dit.** Avant la moindre question, relis la demande initiale et extrais-en tous les champs deja presents (type, app, symptome, ecran concerne, version…). Ne redemande jamais une info donnee.
+- **Une chose a la fois.** Pose **une seule** question par message — ou un petit groupe naturellement lie (ex. nom + adresse de l'environnement vont ensemble). N'affiche jamais le squelette vide du template en demandant de tout completer d'un coup.
+- **Reformule, puis avance.** Apres chaque reponse, restitue en une phrase ce que tu as compris, puis enchaine sur le prochain champ manquant. L'utilisateur doit sentir qu'il **discute**, pas qu'il remplit des cases.
+- **Cartes (AskUserQuestion) pour les seuls choix fermes.** Utilise une carte uniquement pour un vrai choix a options : **quelle application** (si la config en liste plusieurs) ou **quel type** si le besoin reste ambigu. Tout le reste — description, etapes, comportement, criteres — se collecte en texte libre.
+- **Ordre naturel des champs** : type -> application (cle de projet deduite) -> environnement (nom + adresse) -> chemin d'acces -> description -> etapes a reproduire -> comportement constate/attendu **ou** criteres d'acceptance (selon le type) -> captures.
 
-1. **Charger la config** (voir ci-dessus) pour connaitre apps / cles de projet.
-2. **Determiner le type** — deduire le tag du besoin. En cas de doute, demander (anomalie -> Bug ; ca marchait avant -> Regression ; evolution -> Amelioration ; nouvelle fonctionnalite -> US).
-3. **Mener l'entretien** — collecter les champs manquants pour ce type. Si la config liste les apps, proposer le choix et pre-remplir la cle de projet ; **demander l'environnement** (nom + adresse), qui depend du contexte du ticket. Ne **jamais** redemander une info deja fournie ; regrouper les questions.
-4. **Valider les regles d'or** (voir plus bas).
-5. **Composer le ticket** — squelette de `references/template-reference.md`. Titre = `[Tag] <titre court precis> — <App>`.
-6. **Restituer** — proposer le ticket formate, demander confirmation, puis creer dans Jira (voir « Creation Jira »). Sinon, fallback markdown.
+**Fin de la conversation** : elle continue jusqu'a ce que **tous** les champs requis pour ce type (colonne « champs specifiques » + champs communs) soient collectes et confirmes par l'utilisateur — pas avant. Si un champ obligatoire manque, le reclamer ; ne jamais inventer de contenu.
 
-## Regles d'or (a valider avant restitution)
+## 4. Valider les regles d'or
 
+Avant de composer, verifier :
 1. Le **tag** est present en debut de titre.
-2. Pour `[Regression]` : mentionner explicitement **la version ou ca marchait**.
-3. **Environnement + Chemin d'acces** toujours renseignes.
+2. Pour `[Regression]` : **la version ou ca marchait** est mentionnee.
+3. **Environnement (nom + adresse) et Chemin d'acces** sont renseignes.
 4. `[Bug]` / `[Regression]` : Comportement constate ET attendu remplis ; captures **obligatoires** (si l'utilisateur ne peut pas les fournir, le signaler comme champ manquant).
 5. `[Amelioration]` / `[US]` : au moins un trio **Given / When / Then** complet.
 
-Si un champ obligatoire manque, le reclamer avant de creer le ticket — ne pas inventer de contenu.
+## 5. Composer, confirmer, creer
+
+1. **Composer** le ticket depuis le squelette de `references/template-reference.md`. Titre = `[Tag] <titre court precis> — <App>`. Retirer les sections conditionnelles hors sujet pour le type.
+2. **Confirmer** : presenter le ticket formate a l'utilisateur et demander son accord avant creation.
+3. **Creer dans Jira** (voir « Creation Jira ») ; si le MCP est indisponible, basculer sur le fallback markdown.
 
 ## Creation Jira (MCP Atlassian)
 
