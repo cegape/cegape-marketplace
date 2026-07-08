@@ -99,7 +99,7 @@ Crée une amélioration : ajouter un export PDF sur le bulletin de paie
 
 1. **Config chargée** — apps / clés de projet lus depuis le fichier local s'il existe.
 2. **Type détecté** — le skill déduit le tag depuis votre demande ; en cas de doute, il demande.
-3. **Conversation au fil de l'eau** — le skill part de ce que vous avez déjà dit, puis pose **une question à la fois** (ou un petit groupe naturellement lié) pour combler les champs manquants selon le type. Il reformule et avance ; jamais de formulaire vide à compléter d'un coup. Une carte de choix n'apparaît que pour un vrai choix fermé (quelle appli, quel type si ambigu) ; l'app est pré-remplie depuis la config, l'environnement demandé à chaque ticket.
+3. **Conversation au fil de l'eau** — le skill part de ce que vous avez déjà dit, puis pose **une question à la fois** (ou un petit groupe naturellement lié) pour combler les champs manquants selon le type. Il reformule et avance ; jamais de formulaire vide à compléter d'un coup. Tout se collecte en **texte libre** — y compris le choix de l'appli ou du type, énoncé à l'écrit (les cartes de questions structurées de Cowork buguent, la saisie devient inaccessible). L'app est pré-remplie depuis la config, l'environnement demandé à chaque ticket.
 4. **Validation des règles d'or** — tag en tête de titre, environnement + chemin d'accès, version pour une régression, captures pour Bug/Régression, trio Given/When/Then pour Amélioration/US.
 5. **Restitution** — après confirmation, création dans Jira (`cloudId`, clé de projet et type d'issue résolus dynamiquement) ou fallback markdown.
 
