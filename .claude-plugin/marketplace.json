@@ -13,8 +13,8 @@
     {
       "name": "ticket",
       "source": "./plugins/ticket",
-      "description": "Redacteur de tickets (standard 3 Amigos) : entretien guide, validation des regles d'or, creation via le MCP Atlassian ou markdown. Applications, environnements et cles de projet definis dans un fichier de config local.",
-      "version": "0.4.0",
+      "description": "Redacteur de tickets (standard 3 Amigos) : entretien guide, validation des regles d'or, creation via le MCP Atlassian ou markdown. Applications et cles de projet definis dans un fichier de config local ; l'environnement depend du contexte du ticket et est demande a chaque redaction.",
+      "version": "0.5.0",
       "author": { "name": "CEGAPE" },
       "category": "productivity",
       "tags": ["jira", "ticket", "qa", "3-amigos", "user-story", "bug"]
