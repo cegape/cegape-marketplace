@@ -1,6 +1,6 @@
 ---
 description: Configure le plugin ticket et cree le fichier de config local (applications, cles de projet Jira)
-argument-hint: "[--user]"
+argument-hint: "[--project]"
 allowed-tools: Read, Write, Edit
 ---
 
@@ -16,10 +16,10 @@ Les outils de fichiers de Claude Code — **y compris dans Claude Cowork, même 
 
 | Argument | Emplacement écrit |
 |---|---|
-| *(aucun)* | **`.claude/ticket.config.json`** — chemin **relatif** à la racine du projet courant |
-| `--user` | **`~/.claude/ticket.config.json`** — dossier personnel POSIX (`~`, résolu par l'outil Write) |
+| *(aucun — défaut)* | **`~/.claude/ticket.config.json`** — dossier `.claude` **utilisateur** (`~`, résolu par l'outil Write). Valable pour tous les projets, et c'est l'emplacement recommandé (notamment sous Claude Cowork). |
+| `--project` | **`.claude/ticket.config.json`** — chemin **relatif** à la racine du projet courant (config spécifique à ce projet) |
 
-Passe ce chemin **littéralement** à l'outil Write (`.claude/ticket.config.json` ou `~/.claude/ticket.config.json`) — ne le remplace pas par un chemin absolu Windows. Le skill `redacteur-ticket` lit exactement ces deux mêmes emplacements, dans le même ordre (projet puis utilisateur) : lecture et écriture doivent coïncider au caractère près.
+Choisis l'emplacement selon `$ARGUMENTS` : `--project` présent -> emplacement projet ; sinon -> emplacement utilisateur (défaut). Passe ce chemin **littéralement** à l'outil Write (`~/.claude/ticket.config.json` ou `.claude/ticket.config.json`) — ne le remplace pas par un chemin absolu Windows. Le skill `redacteur-ticket` lit ces deux emplacements, projet puis utilisateur (le projet, plus spécifique, l'emporte s'il existe) : lecture et écriture doivent coïncider au caractère près.
 
 ### 2. Ne pas écraser aveuglément
 
@@ -60,15 +60,12 @@ Construire le JSON selon ce schéma :
 ```
 
 Puis :
-- écrire le fichier avec l'outil **Write**, au chemin **littéral** de l'étape 1 (`.claude/ticket.config.json` ou `~/.claude/ticket.config.json`) : Write crée automatiquement les dossiers parents manquants (`.claude/`) — pas besoin de `mkdir` ;
+- écrire le fichier avec l'outil **Write**, au chemin **littéral** de l'étape 1 (`~/.claude/ticket.config.json` par défaut, ou `.claude/ticket.config.json` avec `--project`) : Write crée automatiquement les dossiers parents manquants (`.claude/`) — pas besoin de `mkdir` ;
 - JSON valide, indenté 2 espaces, sans le champ `_comment` du modèle.
 
-### 5. Vérifier, confirmer, et sécuriser la persistance
+### 5. Vérifier puis confirmer
 
-- **Relire le fichier** avec l'outil **Read**, au même chemin que celui écrit : confirme qu'il a bien atterri là où le skill le cherchera. Si la relecture échoue, ne pas prétendre que la config est en place — signaler l'échec et réessayer avec le chemin relatif `.claude/ticket.config.json`.
+- **Relire le fichier** avec l'outil **Read**, au même chemin que celui écrit : confirme qu'il a bien atterri là où le skill le cherchera. Si la relecture échoue, ne pas prétendre que la config est en place — signaler l'échec et proposer de réessayer à l'autre emplacement (`.claude/ticket.config.json` projet si l'écriture utilisateur a échoué, ou inversement).
 - afficher le chemin du fichier créé et un récapitulatif des applications configurées ;
-- **Persistance selon l'environnement** — le fichier ne suffit pas partout :
-  - En **Claude Code**, le fichier persiste : rien de plus à faire.
-  - En **Claude Cowork**, le sandbox est **éphémère par session** : le fichier écrit disparaîtra à la prochaine session. Pour que la config survive, **afficher le JSON dans un bloc à copier** et inviter l'utilisateur à le coller dans les **instructions / la base de connaissances de son projet Cowork** (le skill lit la config depuis le contexte en priorité). Alternative : committer `.claude/ticket.config.json` dans un dépôt **privé** que la session checkout.
 - rappeler que ce fichier contient des informations internes (noms d'applications, clés de projet Jira, site Jira) : **le garder local ou dans un dépôt privé, ne jamais le commiter dans un dépôt public** (le `.gitignore` du marketplace l'ignore déjà) ;
 - indiquer que le plugin l'utilisera automatiquement : il suffit désormais de demander « crée un ticket… » pour que l'application et la clé de projet soient pré-remplies (l'environnement — nom et adresse — restera demandé à chaque ticket, selon son contexte).

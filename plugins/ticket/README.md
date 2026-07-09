@@ -36,8 +36,8 @@ Pour que le skill connaisse vos applications et clés de projet Jira — et évi
 **Voie recommandée — la commande dédiée** (entretien guidé, écrit le fichier pour vous) :
 
 ```
-/ticket:config            # crée .claude/ticket.config.json (projet)
-/ticket:config --user     # crée ~/.claude/ticket.config.json (tous vos projets)
+/ticket:config            # crée ~/.claude/ticket.config.json (défaut, tous vos projets)
+/ticket:config --project  # crée .claude/ticket.config.json (spécifique au projet)
 ```
 
 > 📖 Documentation détaillée de la commande : [docs/config-command.md](docs/config-command.md).
@@ -51,17 +51,14 @@ cp <plugin>/skills/redacteur-ticket/assets/ticket.config.example.json \
 # …puis remplacez les valeurs d'exemple par celles de votre organisation.
 ```
 
-Le skill cherche la config dans **trois sources**, dans cet ordre (il s'arrête à la première trouvée) :
+Emplacements reconnus (ordre de recherche) — chemins **POSIX**, identiques sur tous les systèmes, y compris depuis Claude Cowork sous Windows (les outils de fichiers de Claude Code opèrent en POSIX) :
 
-| # | Source | Idéal pour |
-|---|---|---|
-| 1 | **Contexte de la conversation** : instructions / base de connaissances du projet Claude Cowork, ou bloc collé, ou `CLAUDE.md` chargé | **Claude Cowork** (persiste entre sessions) |
-| 2 | Fichier **projet** `.claude/ticket.config.json` (relatif au projet courant) | Claude Code ; Cowork si committé dans un dépôt privé |
-| 3 | Fichier **utilisateur** `~/.claude/ticket.config.json` | Claude Code (valable pour tous vos projets) |
+| Niveau | Chemin |
+|---|---|
+| Projet | `.claude/ticket.config.json` (relatif au projet courant) |
+| Utilisateur | `~/.claude/ticket.config.json` |
 
-> 🖥️ **Fonctionne sur Claude Code et Claude Cowork.** Chemins **POSIX** identiques partout (les outils de fichiers opèrent en POSIX, même sous Windows via Cowork). **Attention** : dans Claude Cowork, le sandbox est **éphémère par session** — un fichier `~/.claude/…` n'y survit pas d'une session à l'autre. Pour une config durable en Cowork, collez-la dans les **instructions de votre projet** (source 1) ou committez `.claude/ticket.config.json` dans un dépôt **privé** (source 2). En Claude Code, les fichiers (sources 2 et 3) persistent normalement.
-
-La commande `/ticket:config` écrit le fichier, le relit pour vérifier qu'il a bien atterri, et — en contexte Cowork — affiche la config à coller dans les instructions du projet.
+La commande `/ticket:config` écrit à ces emplacements et relit le fichier pour vérifier qu'il a bien atterri.
 
 Schéma :
 

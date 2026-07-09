@@ -13,14 +13,16 @@ Sans config, le plugin reste fonctionnel : il demande ces informations au moment
 ## Utilisation
 
 ```
-/ticket:config            # crée .claude/ticket.config.json (projet courant)
-/ticket:config --user     # crée ~/.claude/ticket.config.json (tous vos projets)
+/ticket:config            # crée ~/.claude/ticket.config.json (défaut, tous vos projets)
+/ticket:config --project  # crée .claude/ticket.config.json (spécifique au projet courant)
 ```
 
 | Argument | Effet |
 |---|---|
-| *(aucun)* | Écrit le fichier de config **projet** à la racine du projet courant |
-| `--user` | Écrit le fichier de config **utilisateur** (valable pour tous vos projets) |
+| *(aucun — défaut)* | Écrit le fichier de config **utilisateur** (valable pour tous vos projets) — emplacement recommandé, notamment sous Claude Cowork |
+| `--project` | Écrit le fichier de config **projet** à la racine du projet courant |
+
+Le skill cherche les deux emplacements dans cet ordre : **projet** puis **utilisateur** (le projet, plus spécifique, l'emporte s'il existe).
 
 ### Chemins
 
@@ -28,18 +30,12 @@ Le fichier est écrit à un chemin **POSIX**, identique quel que soit votre syst
 
 | Argument | Emplacement |
 |---|---|
-| *(défaut)* | `.claude/ticket.config.json` (relatif au projet courant) |
-| `--user` | `~/.claude/ticket.config.json` |
-
-### Où le skill cherche la config (Claude Code **et** Claude Cowork)
-
-Le skill lit la config depuis **trois sources**, dans l'ordre : (1) le **contexte de la conversation** (instructions du projet Cowork, bloc collé, `CLAUDE.md`), (2) le fichier **projet**, (3) le fichier **utilisateur**.
-
-> ⚠️ **Persistance en Claude Cowork.** Le sandbox Cowork est **éphémère par session** : un fichier écrit par `/ticket:config` (même `--user`) **ne survit pas** à la session. Pour une config durable en Cowork, collez-la dans les **instructions de votre projet** (source 1) ou committez `.claude/ticket.config.json` dans un dépôt **privé** (source 2). En **Claude Code**, les fichiers (sources 2 et 3) persistent — rien de plus à faire. Après écriture, la commande affiche donc aussi la config dans un bloc à copier vers les instructions du projet, pour les utilisateurs Cowork.
+| *(défaut)* | `~/.claude/ticket.config.json` |
+| `--project` | `.claude/ticket.config.json` (relatif au projet courant) |
 
 ## Déroulé
 
-1. **Emplacement cible** — chemin POSIX déterminé selon `--user` (voir tableau ci-dessus), écrit tel quel avec l'outil Write, puis relu pour vérifier qu'il a bien atterri.
+1. **Emplacement cible** — chemin POSIX déterminé selon `--project` (défaut = utilisateur ; voir tableau ci-dessus), écrit tel quel avec l'outil Write, puis relu pour vérifier qu'il a bien atterri.
 2. **Pas d'écrasement aveugle** — si un fichier existe déjà, la commande le lit, l'affiche, et propose d'**ajouter une application**, de **modifier** une valeur ou de **repartir de zéro**. Aucune écriture sans accord.
 3. **Entretien** — pour chaque application : `name` et `jiraProjectKey`. Puis, optionnellement, le site Jira (`jira.site`). L'environnement n'est pas demandé ici (nom + adresse saisis au moment du ticket, selon son contexte).
 4. **Écriture** — écrit un JSON valide et indenté (l'outil d'écriture crée le dossier `.claude/` parent si besoin, sur tout OS).
