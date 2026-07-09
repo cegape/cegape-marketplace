@@ -20,6 +20,7 @@ claude plugin install ticket@cegape-marketplace --scope user
 | Plugin | Description | Version |
 |--------|-------------|---------|
 | [ticket](plugins/ticket/) | Rédacteur de tickets (3 Amigos) : entretien guidé, validation, création via le MCP Atlassian ou markdown. Spécifiques (apps, environnements, clés Jira) déportés dans un fichier de config local | 0.4.0 |
+| [projet-claude](plugins/projet-claude/) | Architecte de Projet Claude : entretien guidé pour créer un Projet Claude optimal (claude.ai ou Cowork) — périmètre unique, instructions au format contrat, base de connaissances sans dilution. Commandes `/projet-claude:nouveau`, `/projet-claude:instructions`, `/projet-claude:auditer` | 0.1.0 |
 
 ## Gestion des plugins
 

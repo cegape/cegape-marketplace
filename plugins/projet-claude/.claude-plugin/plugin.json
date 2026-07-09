@@ -1,0 +1,11 @@
+{
+  "name": "projet-claude",
+  "version": "0.1.0",
+  "description": "Architecte de Projet Claude : mene une conversation guidee pour creer et structurer un Projet Claude optimal (claude.ai ou Claude Desktop/Cowork). Fixe un perimetre unique, choisit la plateforme, redige les instructions au format contrat (role + objectif + contraintes + regle d'incertitude + format + a ne pas faire), et planifie une base de connaissances sans dilution de l'attention. Produit un bloc d'instructions et un plan de fichiers prets a coller dans le projet. Commandes : /projet-claude:nouveau (bout en bout), /projet-claude:instructions (le contrat seul), /projet-claude:auditer (critique + reecriture d'un projet existant).",
+  "author": {
+    "name": "CEGAPE"
+  },
+  "repository": "https://github.com/cegape/cegape-marketplace",
+  "license": "MIT",
+  "keywords": ["claude-project", "projet", "instructions", "system-prompt", "knowledge-base", "cowork", "productivity"]
+}

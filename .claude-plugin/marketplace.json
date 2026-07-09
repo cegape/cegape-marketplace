@@ -18,6 +18,15 @@
       "author": { "name": "CEGAPE" },
       "category": "productivity",
       "tags": ["jira", "ticket", "qa", "3-amigos", "user-story", "bug"]
+    },
+    {
+      "name": "projet-claude",
+      "source": "./plugins/projet-claude",
+      "description": "Architecte de Projet Claude : entretien guide pour creer et structurer un Projet Claude optimal (claude.ai ou Cowork/Desktop). Fixe un perimetre unique, choisit la plateforme, redige les instructions au format contrat, et planifie une base de connaissances sans dilution. Produit un bloc d'instructions et un plan de fichiers a coller dans le projet.",
+      "version": "0.1.0",
+      "author": { "name": "CEGAPE" },
+      "category": "productivity",
+      "tags": ["claude-project", "projet", "instructions", "knowledge-base", "cowork", "system-prompt"]
     }
   ]
 }
