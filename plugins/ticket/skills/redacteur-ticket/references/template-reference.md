@@ -8,9 +8,13 @@ utile selon ce que tu rediges.
 ---
 
 <config_schema>
-## Schema et sources de la config
+## Schema du fichier de config
 
-Le contenu JSON est le meme quelle que soit la source (modele : `assets/ticket.config.example.json`) :
+Emplacement (ordre de recherche), lu avec l'outil Read, chemins tels quels :
+- **Projet** : `.claude/ticket.config.json` (relatif au projet courant) ;
+- **Utilisateur** : `~/.claude/ticket.config.json`.
+
+Modele : `assets/ticket.config.example.json`.
 
 ```jsonc
 {
@@ -24,30 +28,9 @@ Le contenu JSON est le meme quelle que soit la source (modele : `assets/ticket.c
 }
 ```
 
-### Deux sources selon la plateforme (ordre de recherche)
-
-1. **En contexte (Claude Cowork)** — le sandbox Cowork est jetable (`HOME` = `/sessions/<aleatoire>`
-   change a chaque session) : aucun fichier n'y survit. La config vit donc dans les **instructions
-   du projet Cowork**, sous forme d'un bloc reconnaissable, reinjecte a chaque session :
-
-   ```
-   <!-- ticket.config -->
-   {
-     "applications": [ { "name": "MonApp", "jiraProjectKey": "APP" } ],
-     "jira": { "site": "monorg.atlassian.net" }
-   }
-   ```
-
-   Le skill repere ce bloc (ou tout objet JSON portant une cle `applications`) dans le contexte.
-2. **En fichier (Claude Code)** — chemins **POSIX**, lus tels quels avec l'outil Read (jamais
-   convertis en chemin Windows, meme sous Windows : les outils operent en POSIX) : d'abord projet
-   `.claude/ticket.config.json`, puis utilisateur `~/.claude/ticket.config.json`.
-
-Reconnaitre la plateforme : `SANDBOX_RUNTIME=1` (ou `HOME` en `/sessions/`) => Cowork ; `CLAUDECODE=1` => Claude Code.
-
-### Regles d'usage
-- Si la config existe (peu importe la source), proposer la liste des `applications` et pre-remplir
-  la `jiraProjectKey` correspondante.
+Regles d'usage :
+- Si la config existe, proposer la liste des `applications` et pre-remplir la `jiraProjectKey`
+  correspondante.
 - **L'environnement n'est PAS en config** : il depend du contexte de chaque ticket (une meme app
   peut etre en Recette, Preprod ou Production selon le cas). Son **nom et son adresse** sont
   **demandes a l'utilisateur** au moment de rediger le ticket, jamais stockes.

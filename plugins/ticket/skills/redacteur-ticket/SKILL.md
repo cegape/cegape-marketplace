@@ -11,18 +11,19 @@ Le skill est **generique** : aucune application, environnement ni cle de projet 
 
 ## 1. Charger la config
 
-La config fournit la liste des **applications** (nom + `jiraProjectKey`) et optionnellement le **site Jira** ; elle pre-remplit la conversation (proposer les apps, deduire la cle de projet) au lieu de tout redemander. Elle a **deux sources** selon la plateforme — les chercher **dans cet ordre**, garder la premiere trouvee :
+Au demarrage, cherche le fichier de config **avec l'outil Read**, dans cet ordre — garder le premier trouve :
+1. **Projet** : `.claude/ticket.config.json` (relatif a la racine du projet courant) ;
+2. **Utilisateur** : `~/.claude/ticket.config.json`.
 
-1. **En contexte** — un bloc JSON contenant une cle `applications` present dans les **instructions du projet** (ou colle par l'utilisateur dans un message). **C'est la source de Claude Cowork** : son sandbox est jetable (`HOME` = `/sessions/<aleatoire>`, renouvele a chaque session), donc aucun fichier n'y survit ; la config persiste uniquement via les instructions du projet, reinjectees a chaque session.
-2. **En fichier** — a lire avec l'outil Read, **chemins POSIX tels quels** (jamais convertis en chemin Windows `C:\Users\...` : les outils operent en POSIX) : d'abord projet `.claude/ticket.config.json` (relatif au projet courant), puis utilisateur `~/.claude/ticket.config.json`. **C'est la source de Claude Code**, ou le disque persiste.
+Passe ces chemins **tels quels** a l'outil Read (`~` est resolu par l'outil) ; ne construis pas de chemin absolu a la main.
 
-**Reconnaitre la plateforme** (pour orienter l'utilisateur, cf. ci-dessous) : `SANDBOX_RUNTIME=1` — ou `HOME` commencant par `/sessions/` — signale **Cowork** ; `CLAUDECODE=1` signale **Claude Code**.
-
-Si **aucune** config n'est trouvee, fonctionne quand meme : demander les infos dans la conversation, et proposer **`/ticket:config`** — qui, selon la plateforme, ecrit le fichier (Claude Code) ou produit un bloc a coller dans les instructions du projet (Cowork). Ne jamais inventer d'URL ni de cle de projet.
+S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`) et optionnellement le **site Jira**. Ces valeurs pre-remplissent la conversation (proposer la liste d'apps, deduire la cle de projet) au lieu d'etre redemandees.
 
 **L'environnement (Recette / Preprod / Production) n'est PAS en config** : il depend du contexte de chaque ticket (une meme app change d'environnement selon le cas signale). Son **nom ET son adresse** se demandent pendant la conversation ; ne les stocke jamais.
 
-Le schema de la config et le format du bloc a coller sont dans `references/template-reference.md` § `<config_schema>`.
+Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos dans la conversation, et propose **`/ticket:config`** (entretien guide qui ecrit le fichier). Ne jamais inventer d'URL ni de cle de projet.
+
+Le schema du fichier est documente dans `references/template-reference.md` § `<config_schema>`.
 
 ## 2. Les 4 types et leurs champs
 
@@ -46,7 +47,7 @@ Tu **converses** pour reunir les champs manquants ; tu ne fais **pas** remplir u
 - **Pars de ce qui est deja dit.** Avant la moindre question, relis la demande initiale et extrais-en tous les champs deja presents (type, app, symptome, ecran concerne, version…). Ne redemande jamais une info donnee.
 - **Une chose a la fois.** Pose **une seule** question par message — ou un petit groupe naturellement lie (ex. nom + adresse de l'environnement vont ensemble). N'affiche jamais le squelette vide du template en demandant de tout completer d'un coup.
 - **Reformule, puis avance.** Apres chaque reponse, restitue en une phrase ce que tu as compris, puis enchaine sur le prochain champ manquant. L'utilisateur doit sentir qu'il **discute**, pas qu'il remplit des cases.
-- **Tout en texte libre — evite les cartes (AskUserQuestion).** Dans Claude Cowork, les cartes de questions structurees (« visualize ») buguent : les champs de saisie deviennent inaccessibles. Collecte donc **tout** en conversation, y compris les choix fermes : pour **l'application** ou **le type** ambigu, enonce les options a l'ecrit (ex. « Sur quelle appli — PaieRH, GestionRH ? ») et laisse repondre en texte. N'utilise une carte qu'en tout dernier recours, si un choix a vraiment beaucoup d'options.
+- **Cartes (AskUserQuestion) pour les seuls choix fermes.** Utilise une carte uniquement pour un vrai choix a options : **quelle application** (si la config en liste plusieurs) ou **quel type** si le besoin reste ambigu. Tout le reste — description, etapes, comportement, criteres — se collecte en texte libre.
 - **Ordre naturel des champs** : type -> application (cle de projet deduite) -> environnement (nom + adresse) -> chemin d'acces -> description -> etapes a reproduire -> comportement constate/attendu **ou** criteres d'acceptance (selon le type) -> captures.
 
 **Fin de la conversation** : elle continue jusqu'a ce que **tous** les champs requis pour ce type (colonne « champs specifiques » + champs communs) soient collectes et confirmes par l'utilisateur — pas avant. Si un champ obligatoire manque, le reclamer ; ne jamais inventer de contenu.

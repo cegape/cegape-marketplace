@@ -31,29 +31,27 @@ claude plugin install ticket@cegape-marketplace --scope user
 
 ## Configuration (recommandé)
 
-Pour que le skill connaisse vos applications et clés de projet Jira — et évite de vous les redemander — donnez-lui une config. **Où elle vit dépend de votre plateforme**, car Claude Cowork et Claude Code ne persistent pas les données au même endroit.
+Pour que le skill connaisse vos applications et clés de projet Jira — et évite de vous les redemander — créez un fichier de config **local**.
 
-**Voie recommandée — la commande dédiée** (entretien guidé, détecte la plateforme et installe la config au bon endroit) :
+**Voie recommandée — la commande dédiée** (entretien guidé, écrit le fichier pour vous) :
 
 ```
-/ticket:config            # emplacement par défaut selon la plateforme
-/ticket:config --project  # (Claude Code) force le niveau projet
+/ticket:config            # crée ~/.claude/ticket.config.json (défaut, tous vos projets)
+/ticket:config --project  # crée .claude/ticket.config.json (spécifique au projet)
 ```
 
 > 📖 Documentation détaillée de la commande : [docs/config-command.md](docs/config-command.md).
 
-### Où va la config selon la plateforme
+Emplacements reconnus (ordre de recherche) :
 
-| Plateforme | Emplacement | Persistance |
+| Niveau | Chemin | Portée |
 |---|---|---|
-| **Claude Code** | Fichier `~/.claude/ticket.config.json` (défaut) ou `.claude/ticket.config.json` (`--project`) | Le disque persiste |
-| **Claude Cowork** | Un **bloc `<!-- ticket.config -->` collé dans les instructions de votre projet Cowork** | Réinjecté à chaque session |
+| Projet | `.claude/ticket.config.json` | Ce projet uniquement |
+| Utilisateur | `~/.claude/ticket.config.json` | Tous vos projets |
 
-> ⚠️ **Sous Cowork, pas de fichier.** Le sandbox Cowork est jetable : son `HOME` (`/sessions/<aléatoire>`) change à chaque session, donc aucun fichier écrit sur le disque n'y survit. Seules les **instructions du projet** persistent d'une session à l'autre — c'est là que la config doit vivre. `/ticket:config` détecte Cowork et vous fournit le bloc à coller.
+Le skill lit ces deux emplacements, projet puis utilisateur (le projet, plus spécifique, l'emporte s'il existe).
 
-Le skill lit la config **depuis le contexte** (instructions du projet, sous Cowork) ou **depuis le fichier** (projet puis utilisateur, sous Claude Code) — la première source trouvée l'emporte. Les chemins de fichiers sont **POSIX**, jamais convertis en chemin Windows.
-
-Schéma (identique quelle que soit la source) :
+Schéma :
 
 ```jsonc
 {
@@ -69,9 +67,9 @@ Schéma (identique quelle que soit la source) :
 
 > 💡 **L'environnement n'est pas en config** : il dépend du contexte de chaque ticket (Recette, Préprod ou Production selon le cas). Son nom **et** son adresse sont demandés au moment de créer le ticket.
 
-> ⚠️ Cette config contient des informations internes (noms d'applications, clés de projet, site Jira). Gardez-la **privée** — ne la commitez jamais dans un dépôt public.
+> ⚠️ Ce fichier contient des informations internes (noms d'applications, clés de projet, site Jira). Gardez-le **local** ou dans un dépôt privé — ne le commitez jamais dans un dépôt public.
 
-Sans config, le plugin reste pleinement fonctionnel : il demande ces informations pendant l'entretien et propose de l'installer.
+Sans fichier de config, le plugin reste pleinement fonctionnel : il demande ces informations pendant l'entretien et propose de le créer.
 
 ### Pré-requis pour la création directe dans Jira
 
@@ -90,9 +88,9 @@ Crée une amélioration : ajouter un export PDF sur le bulletin de paie
 
 ### Déroulé
 
-1. **Config chargée** — apps / clés de projet lus depuis les instructions du projet (Cowork) ou le fichier local (Claude Code), s'ils existent.
+1. **Config chargée** — apps / clés de projet lus depuis le fichier local s'il existe.
 2. **Type détecté** — le skill déduit le tag depuis votre demande ; en cas de doute, il demande.
-3. **Conversation au fil de l'eau** — le skill part de ce que vous avez déjà dit, puis pose **une question à la fois** (ou un petit groupe naturellement lié) pour combler les champs manquants selon le type. Il reformule et avance ; jamais de formulaire vide à compléter d'un coup. Tout se collecte en **texte libre** — y compris le choix de l'appli ou du type, énoncé à l'écrit (les cartes de questions structurées de Cowork buguent, la saisie devient inaccessible). L'app est pré-remplie depuis la config, l'environnement demandé à chaque ticket.
+3. **Conversation au fil de l'eau** — le skill part de ce que vous avez déjà dit, puis pose **une question à la fois** (ou un petit groupe naturellement lié) pour combler les champs manquants selon le type. Il reformule et avance ; jamais de formulaire vide à compléter d'un coup. Une carte de choix n'apparaît que pour un vrai choix fermé (quelle appli, quel type si ambigu) ; l'app est pré-remplie depuis la config, l'environnement demandé à chaque ticket.
 4. **Validation des règles d'or** — tag en tête de titre, environnement + chemin d'accès, version pour une régression, captures pour Bug/Régression, trio Given/When/Then pour Amélioration/US.
 5. **Restitution** — après confirmation, création dans Jira (`cloudId`, clé de projet et type d'issue résolus dynamiquement) ou fallback markdown.
 
