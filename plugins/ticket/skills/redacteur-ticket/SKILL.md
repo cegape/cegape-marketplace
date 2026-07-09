@@ -9,21 +9,20 @@ Aide a rediger un ticket conforme au standard **3 Amigos** (QA + Produit), puis 
 
 Le skill est **generique** : aucune application, environnement ni cle de projet n'est code en dur. Les specificites de l'organisation vivent dans un **fichier de config local** (voir ci-dessous).
 
-## 1. Charger la config locale
+## 1. Charger la config
 
-Au demarrage, cherche le fichier de config **avec l'outil Read** (pas via un chemin construit a la main), dans cet ordre :
-1. **Projet** : `.claude/ticket.config.json` — chemin **relatif** a la racine du projet courant ;
-2. **Utilisateur** : `~/.claude/ticket.config.json`.
+La config fournit la liste des **applications** (nom + `jiraProjectKey`) et optionnellement le **site Jira** ; elle pre-remplit la conversation (proposer les apps, deduire la cle de projet) au lieu de tout redemander. Elle a **deux sources** selon la plateforme — les chercher **dans cet ordre**, garder la premiere trouvee :
 
-**Chemins POSIX tels quels — ne jamais les convertir en chemin Windows** (`C:\Users\...`, `%USERPROFILE%`, backslashes). Les outils de fichiers de Claude Code, y compris dans Claude Cowork, operent dans un environnement POSIX : un chemin Windows absolu n'y pointe sur rien, et le fichier serait introuvable. `/ticket:config` ecrit a ces memes emplacements ; lecture et ecriture doivent utiliser la **meme** ecriture relative / `~`.
+1. **En contexte** — un bloc JSON contenant une cle `applications` present dans les **instructions du projet** (ou colle par l'utilisateur dans un message). **C'est la source de Claude Cowork** : son sandbox est jetable (`HOME` = `/sessions/<aleatoire>`, renouvele a chaque session), donc aucun fichier n'y survit ; la config persiste uniquement via les instructions du projet, reinjectees a chaque session.
+2. **En fichier** — a lire avec l'outil Read, **chemins POSIX tels quels** (jamais convertis en chemin Windows `C:\Users\...` : les outils operent en POSIX) : d'abord projet `.claude/ticket.config.json` (relatif au projet courant), puis utilisateur `~/.claude/ticket.config.json`. **C'est la source de Claude Code**, ou le disque persiste.
 
-S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`) et optionnellement le **site Jira**. Ces valeurs pre-remplissent la conversation (proposer la liste d'apps, deduire la cle de projet) au lieu d'etre redemandees.
+**Reconnaitre la plateforme** (pour orienter l'utilisateur, cf. ci-dessous) : `SANDBOX_RUNTIME=1` — ou `HOME` commencant par `/sessions/` — signale **Cowork** ; `CLAUDECODE=1` signale **Claude Code**.
 
-**L'environnement n'est PAS en config** : il depend du contexte de chaque ticket (une meme app peut etre en Recette, Preprod ou Production selon le cas signale). Son **nom ET son adresse** se demandent pendant la conversation ; ne les stocke jamais.
+Si **aucune** config n'est trouvee, fonctionne quand meme : demander les infos dans la conversation, et proposer **`/ticket:config`** — qui, selon la plateforme, ecrit le fichier (Claude Code) ou produit un bloc a coller dans les instructions du projet (Cowork). Ne jamais inventer d'URL ni de cle de projet.
 
-Si **aucun** fichier n'existe : fonctionne quand meme en demandant ces infos dans la conversation, et propose la commande **`/ticket:config`** (entretien guide qui ecrit le fichier) ou une creation depuis le modele `assets/ticket.config.example.json`. Ne jamais inventer d'URL ni de cle de projet.
+**L'environnement (Recette / Preprod / Production) n'est PAS en config** : il depend du contexte de chaque ticket (une meme app change d'environnement selon le cas signale). Son **nom ET son adresse** se demandent pendant la conversation ; ne les stocke jamais.
 
-Le schema du fichier est documente dans `references/template-reference.md` § `<config_schema>`.
+Le schema de la config et le format du bloc a coller sont dans `references/template-reference.md` § `<config_schema>`.
 
 ## 2. Les 4 types et leurs champs
 

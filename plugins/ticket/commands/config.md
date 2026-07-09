@@ -1,71 +1,84 @@
 ---
-description: Configure le plugin ticket et cree le fichier de config local (applications, cles de projet Jira)
+description: Configure le plugin ticket (applications, cles de projet Jira) — en fichier sous Claude Code, en bloc a coller dans les instructions du projet sous Cowork
 argument-hint: "[--project]"
-allowed-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit, Bash
 ---
 
 ## Tâche
 
-Construire, via un court entretien, le fichier de config local du plugin `ticket`, puis l'écrire sur disque. Ce fichier déporte les spécificités de l'organisation (applications, clés de projet Jira) hors du plugin — rien d'interne n'est jamais publié.
+Construire, via un court entretien, la config du plugin `ticket` (applications + clés de projet Jira), puis la **déposer là où le skill la retrouvera**. L'emplacement dépend de la plateforme : un **fichier** sous Claude Code, un **bloc à coller dans les instructions du projet** sous Claude Cowork (dont le sandbox est jetable). Rien d'interne n'est jamais publié.
 
 > **L'environnement n'est PAS en config.** Il dépend du contexte de chaque ticket (une même application peut être en Recette, Préprod ou Production selon le cas signalé) : son nom **et** son adresse sont demandés au moment de rédiger le ticket, jamais stockés ici.
 
-### 1. Déterminer l'emplacement cible (chemins POSIX)
+### 1. Détecter la plateforme
 
-Les outils de fichiers de Claude Code — **y compris dans Claude Cowork, même quand le poste de l'utilisateur est sous Windows** — opèrent dans un environnement POSIX. N'essaie **jamais** de construire un chemin Windows (`C:\Users\...`, `%USERPROFILE%`, backslashes) : il ne pointerait sur rien et le fichier serait ensuite introuvable. Utilise ces chemins **tels quels** :
+Lancer, avec l'outil **Bash** :
 
-| Argument | Emplacement écrit |
-|---|---|
-| *(aucun — défaut)* | **`~/.claude/ticket.config.json`** — dossier `.claude` **utilisateur** (`~`, résolu par l'outil Write). Valable pour tous les projets, et c'est l'emplacement recommandé (notamment sous Claude Cowork). |
-| `--project` | **`.claude/ticket.config.json`** — chemin **relatif** à la racine du projet courant (config spécifique à ce projet) |
+```bash
+echo "SANDBOX=$SANDBOX_RUNTIME | CC=$CLAUDECODE | HOME=$HOME"
+```
 
-Choisis l'emplacement selon `$ARGUMENTS` : `--project` présent -> emplacement projet ; sinon -> emplacement utilisateur (défaut). Passe ce chemin **littéralement** à l'outil Write (`~/.claude/ticket.config.json` ou `.claude/ticket.config.json`) — ne le remplace pas par un chemin absolu Windows. Le skill `redacteur-ticket` lit ces deux emplacements, projet puis utilisateur (le projet, plus spécifique, l'emporte s'il existe) : lecture et écriture doivent coïncider au caractère près.
+- `SANDBOX_RUNTIME=1` — ou `HOME` commençant par `/sessions/` → **Claude Cowork**. Sandbox jetable : `HOME` = `/sessions/<aléatoire>` change à chaque session, donc **aucun fichier ne survit**. La config doit aller dans les **instructions du projet Cowork** → suivre l'étape 4-B.
+- Sinon (`CLAUDECODE=1`, `HOME` réel) → **Claude Code**. Le disque persiste : config en **fichier** → suivre l'étape 4-A.
 
-### 2. Ne pas écraser aveuglément
+### 2. Retrouver une config existante (ne pas écraser aveuglément)
 
-Lire d'abord le fichier cible s'il existe. S'il contient déjà une config valide :
-- la présenter à l'utilisateur ;
-- proposer d'**ajouter une application**, de **modifier** une valeur, ou de **repartir de zéro** ;
-- ne jamais l'écraser sans accord explicite.
+- **Cowork** : chercher un bloc `<!-- ticket.config -->` (ou un objet JSON avec une clé `applications`) déjà présent dans le contexte / les instructions du projet.
+- **Claude Code** : Read le fichier cible — `~/.claude/ticket.config.json` par défaut, ou `.claude/ticket.config.json` si `--project` est dans `$ARGUMENTS`.
 
-Le modèle de référence (schéma + valeurs d'exemple) est disponible dans
-`${CLAUDE_PLUGIN_ROOT}/skills/redacteur-ticket/assets/ticket.config.example.json` — le lire pour rappeler la structure attendue.
+Si une config valide existe déjà : la présenter, proposer d'**ajouter une application**, de **modifier** une valeur ou de **repartir de zéro** ; ne jamais l'écraser sans accord explicite.
+
+Modèle de référence (schéma + valeurs d'exemple) : `${CLAUDE_PLUGIN_ROOT}/skills/redacteur-ticket/assets/ticket.config.example.json`.
 
 ### 3. Mener l'entretien
 
-Collecter, en regroupant les questions :
+En **texte libre** (pas de carte AskUserQuestion — elle bugue sous Cowork), collecter :
 
-1. **Applications** (au moins une). Pour chacune :
-   - `name` : nom affiché de l'application (ex. « MonApp ») ;
-   - `jiraProjectKey` : clé de projet Jira par défaut (ex. « APP »).
-   - **Ne pas demander d'environnement** : il dépend du contexte du ticket (nom + adresse saisis au moment de la rédaction), il n'a pas sa place dans une config générale.
-2. **Site Jira** (optionnel) : `jira.site` (ex. `monorg.atlassian.net`). Si l'utilisateur ne le fournit pas, omettre la clé `jira` — le skill résoudra le site via `getAccessibleAtlassianResources`.
+1. **Applications** (au moins une). Pour chacune : `name` (nom affiché, ex. « MonApp ») et `jiraProjectKey` (clé de projet Jira, ex. « APP »). Ne pas demander d'environnement (il dépend du contexte du ticket).
+2. **Site Jira** (optionnel) : `jira.site` (ex. `monorg.atlassian.net`). Sans lui, omettre la clé `jira` — le skill résoudra le site via `getAccessibleAtlassianResources`.
 
 Ne rien inventer : si une valeur manque, la demander.
 
-### 4. Composer et écrire le fichier
+### 4. Déposer la config
 
-Construire le JSON selon ce schéma :
+Construire le JSON :
 
 ```json
 {
   "applications": [
-    {
-      "name": "MonApp",
-      "jiraProjectKey": "APP"
-    }
+    { "name": "MonApp", "jiraProjectKey": "APP" }
   ],
   "jira": { "site": "monorg.atlassian.net" }
 }
 ```
 
-Puis :
-- écrire le fichier avec l'outil **Write**, au chemin **littéral** de l'étape 1 (`~/.claude/ticket.config.json` par défaut, ou `.claude/ticket.config.json` avec `--project`) : Write crée automatiquement les dossiers parents manquants (`.claude/`) — pas besoin de `mkdir` ;
-- JSON valide, indenté 2 espaces, sans le champ `_comment` du modèle.
+**4-A — Claude Code (fichier).** Écrire avec l'outil **Write**, au chemin **littéral** (chemins POSIX tels quels, jamais convertis en chemin Windows `C:\Users\...`) :
 
-### 5. Vérifier puis confirmer
+| Argument | Emplacement |
+|---|---|
+| *(défaut)* | `~/.claude/ticket.config.json` (tous les projets) |
+| `--project` | `.claude/ticket.config.json` (projet courant) |
 
-- **Relire le fichier** avec l'outil **Read**, au même chemin que celui écrit : confirme qu'il a bien atterri là où le skill le cherchera. Si la relecture échoue, ne pas prétendre que la config est en place — signaler l'échec et proposer de réessayer à l'autre emplacement (`.claude/ticket.config.json` projet si l'écriture utilisateur a échoué, ou inversement).
-- afficher le chemin du fichier créé et un récapitulatif des applications configurées ;
-- rappeler que ce fichier contient des informations internes (noms d'applications, clés de projet Jira, site Jira) : **le garder local ou dans un dépôt privé, ne jamais le commiter dans un dépôt public** (le `.gitignore` du marketplace l'ignore déjà) ;
-- indiquer que le plugin l'utilisera automatiquement : il suffit désormais de demander « crée un ticket… » pour que l'application et la clé de projet soient pré-remplies (l'environnement — nom et adresse — restera demandé à chaque ticket, selon son contexte).
+JSON indenté 2 espaces, sans le champ `_comment`. Write crée les dossiers parents. Puis **relire** avec Read au même chemin pour confirmer que le fichier a bien atterri ; si la relecture échoue, le signaler et proposer l'autre emplacement.
+
+**4-B — Cowork (instructions du projet).** Ne **pas** compter sur un fichier : il disparaîtrait à la prochaine session. À la place, afficher un bloc **prêt à coller**, exactement sous cette forme :
+
+```
+<!-- ticket.config -->
+{
+  "applications": [
+    { "name": "MonApp", "jiraProjectKey": "APP" }
+  ],
+  "jira": { "site": "monorg.atlassian.net" }
+}
+```
+
+et demander à l'utilisateur de le **coller dans les instructions de son projet Cowork** (paramètres du projet → Instructions / Knowledge) : il sera réinjecté à chaque session, et le skill le lira depuis le contexte. Tant qu'il n'y est pas, la config ne survivra pas à la session courante.
+
+### 5. Confirmer
+
+- afficher un récapitulatif des applications configurées ;
+- **Claude Code** : rappeler le chemin du fichier écrit ; le plugin l'utilisera automatiquement au prochain « crée un ticket… ».
+- **Cowork** : rappeler que la config n'est persistante **qu'une fois le bloc collé dans les instructions du projet** ;
+- rappeler que ces informations sont internes (noms d'applications, clés de projet, site Jira) : **les garder privées, ne jamais les commiter dans un dépôt public** ;
+- l'environnement (nom + adresse) restera demandé à chaque ticket, selon son contexte.
