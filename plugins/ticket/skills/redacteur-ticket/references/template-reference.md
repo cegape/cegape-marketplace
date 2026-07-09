@@ -10,9 +10,12 @@ utile selon ce que tu rediges.
 <config_schema>
 ## Schema du fichier de config
 
-Emplacement (ordre de recherche) — chemins **POSIX**, lus tels quels avec l'outil Read (jamais convertis en chemin Windows, même dans Claude Cowork sous Windows : les outils de fichiers opèrent en POSIX) :
-- **Projet** : `.claude/ticket.config.json` (relatif au projet courant) ;
-- **Utilisateur** : `~/.claude/ticket.config.json`.
+Sources (ordre de recherche, s'arreter a la premiere trouvee) :
+1. **Contexte de la conversation** : instructions / knowledge du projet Cowork, bloc colle, ou `CLAUDE.md` charge — persiste en Cowork (sandbox ephemere par session) ;
+2. **Fichier projet** : `.claude/ticket.config.json` (relatif au projet courant) ;
+3. **Fichier utilisateur** : `~/.claude/ticket.config.json`.
+
+Chemins de fichiers **POSIX**, lus tels quels avec l'outil Read (jamais convertis en chemin Windows, même dans Cowork : les outils de fichiers y operent en POSIX).
 
 Modele : `assets/ticket.config.example.json`.
 
@@ -35,8 +38,9 @@ Regles d'usage :
   peut etre en Recette, Preprod ou Production selon le cas). Son **nom et son adresse** sont
   **demandes a l'utilisateur** au moment de rediger le ticket, jamais stockes.
 - `jira.site` est optionnel : sans lui, resoudre le site via `getAccessibleAtlassianResources`.
-- Si la config est absente, demander ces infos a l'utilisateur et proposer de creer le fichier
-  depuis le modele. Ne jamais inventer de cle de projet.
+- Si aucune source n'existe, demander ces infos a l'utilisateur et proposer, selon l'environnement :
+  `/ticket:config` (ecrit le fichier — Claude Code) ou coller les `applications` dans les instructions
+  du projet Cowork (persiste entre sessions). Ne jamais inventer de cle de projet.
 </config_schema>
 
 ---

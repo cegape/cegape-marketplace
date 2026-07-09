@@ -63,9 +63,12 @@ Puis :
 - écrire le fichier avec l'outil **Write**, au chemin **littéral** de l'étape 1 (`.claude/ticket.config.json` ou `~/.claude/ticket.config.json`) : Write crée automatiquement les dossiers parents manquants (`.claude/`) — pas besoin de `mkdir` ;
 - JSON valide, indenté 2 espaces, sans le champ `_comment` du modèle.
 
-### 5. Vérifier puis confirmer
+### 5. Vérifier, confirmer, et sécuriser la persistance
 
 - **Relire le fichier** avec l'outil **Read**, au même chemin que celui écrit : confirme qu'il a bien atterri là où le skill le cherchera. Si la relecture échoue, ne pas prétendre que la config est en place — signaler l'échec et réessayer avec le chemin relatif `.claude/ticket.config.json`.
 - afficher le chemin du fichier créé et un récapitulatif des applications configurées ;
+- **Persistance selon l'environnement** — le fichier ne suffit pas partout :
+  - En **Claude Code**, le fichier persiste : rien de plus à faire.
+  - En **Claude Cowork**, le sandbox est **éphémère par session** : le fichier écrit disparaîtra à la prochaine session. Pour que la config survive, **afficher le JSON dans un bloc à copier** et inviter l'utilisateur à le coller dans les **instructions / la base de connaissances de son projet Cowork** (le skill lit la config depuis le contexte en priorité). Alternative : committer `.claude/ticket.config.json` dans un dépôt **privé** que la session checkout.
 - rappeler que ce fichier contient des informations internes (noms d'applications, clés de projet Jira, site Jira) : **le garder local ou dans un dépôt privé, ne jamais le commiter dans un dépôt public** (le `.gitignore` du marketplace l'ignore déjà) ;
 - indiquer que le plugin l'utilisera automatiquement : il suffit désormais de demander « crée un ticket… » pour que l'application et la clé de projet soient pré-remplies (l'environnement — nom et adresse — restera demandé à chaque ticket, selon son contexte).

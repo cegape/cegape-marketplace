@@ -22,8 +22,6 @@ Sans config, le plugin reste fonctionnel : il demande ces informations au moment
 | *(aucun)* | Écrit le fichier de config **projet** à la racine du projet courant |
 | `--user` | Écrit le fichier de config **utilisateur** (valable pour tous vos projets) |
 
-Le skill cherche ces deux emplacements dans cet ordre : **projet** puis **utilisateur**.
-
 ### Chemins
 
 Le fichier est écrit à un chemin **POSIX**, identique quel que soit votre système — y compris depuis Claude Cowork sous Windows, car les outils de fichiers de Claude Code opèrent dans un environnement POSIX (un chemin Windows `C:\Users\...` n'y serait pas retrouvé) :
@@ -32,6 +30,12 @@ Le fichier est écrit à un chemin **POSIX**, identique quel que soit votre syst
 |---|---|
 | *(défaut)* | `.claude/ticket.config.json` (relatif au projet courant) |
 | `--user` | `~/.claude/ticket.config.json` |
+
+### Où le skill cherche la config (Claude Code **et** Claude Cowork)
+
+Le skill lit la config depuis **trois sources**, dans l'ordre : (1) le **contexte de la conversation** (instructions du projet Cowork, bloc collé, `CLAUDE.md`), (2) le fichier **projet**, (3) le fichier **utilisateur**.
+
+> ⚠️ **Persistance en Claude Cowork.** Le sandbox Cowork est **éphémère par session** : un fichier écrit par `/ticket:config` (même `--user`) **ne survit pas** à la session. Pour une config durable en Cowork, collez-la dans les **instructions de votre projet** (source 1) ou committez `.claude/ticket.config.json` dans un dépôt **privé** (source 2). En **Claude Code**, les fichiers (sources 2 et 3) persistent — rien de plus à faire. Après écriture, la commande affiche donc aussi la config dans un bloc à copier vers les instructions du projet, pour les utilisateurs Cowork.
 
 ## Déroulé
 
