@@ -10,9 +10,9 @@ utile selon ce que tu rediges.
 <config_schema>
 ## Schema du fichier de config
 
-Emplacement (ordre de recherche, chemin resolu selon l'OS) :
-- **Projet** : `.claude/ticket.config.json` (sous Windows : `.claude\ticket.config.json`) ;
-- **Utilisateur** : `~/.claude/ticket.config.json` sous macOS/Linux, `%USERPROFILE%\.claude\ticket.config.json` sous Windows.
+Emplacement (ordre de recherche) — chemins **POSIX**, lus tels quels avec l'outil Read (jamais convertis en chemin Windows, même dans Claude Cowork sous Windows : les outils de fichiers opèrent en POSIX) :
+- **Projet** : `.claude/ticket.config.json` (relatif au projet courant) ;
+- **Utilisateur** : `~/.claude/ticket.config.json`.
 
 Modele : `assets/ticket.config.example.json`.
 

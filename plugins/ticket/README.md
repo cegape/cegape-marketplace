@@ -51,14 +51,14 @@ cp <plugin>/skills/redacteur-ticket/assets/ticket.config.example.json \
 # …puis remplacez les valeurs d'exemple par celles de votre organisation.
 ```
 
-Emplacements reconnus (ordre de recherche), résolus selon l'OS — utile depuis Claude Cowork sur Windows ou macOS :
+Emplacements reconnus (ordre de recherche) — chemins **POSIX**, identiques sur tous les systèmes, y compris depuis Claude Cowork sous Windows (les outils de fichiers de Claude Code opèrent en POSIX) :
 
-| OS | Projet | Utilisateur |
-|---|---|---|
-| macOS / Linux | `.claude/ticket.config.json` | `~/.claude/ticket.config.json` |
-| Windows | `.claude\ticket.config.json` | `%USERPROFILE%\.claude\ticket.config.json` |
+| Niveau | Chemin |
+|---|---|
+| Projet | `.claude/ticket.config.json` (relatif au projet courant) |
+| Utilisateur | `~/.claude/ticket.config.json` |
 
-La commande `/ticket:config` résout automatiquement le bon chemin.
+La commande `/ticket:config` écrit à ces emplacements et relit le fichier pour vérifier qu'il a bien atterri.
 
 Schéma :
 

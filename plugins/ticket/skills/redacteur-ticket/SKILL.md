@@ -11,9 +11,11 @@ Le skill est **generique** : aucune application, environnement ni cle de projet 
 
 ## 1. Charger la config locale
 
-Au demarrage, cherche un fichier de config, dans cet ordre (resoudre le chemin selon l'OS — beaucoup d'utilisateurs sont sur Windows ou macOS via Claude Cowork) :
-1. **Projet** : `.claude/ticket.config.json` a la racine du projet courant (`.claude\ticket.config.json` sous Windows) ;
-2. **Utilisateur** : `~/.claude/ticket.config.json` sous macOS/Linux, ou `%USERPROFILE%\.claude\ticket.config.json` sous Windows.
+Au demarrage, cherche le fichier de config **avec l'outil Read** (pas via un chemin construit a la main), dans cet ordre :
+1. **Projet** : `.claude/ticket.config.json` — chemin **relatif** a la racine du projet courant ;
+2. **Utilisateur** : `~/.claude/ticket.config.json`.
+
+**Chemins POSIX tels quels — ne jamais les convertir en chemin Windows** (`C:\Users\...`, `%USERPROFILE%`, backslashes). Les outils de fichiers de Claude Code, y compris dans Claude Cowork, operent dans un environnement POSIX : un chemin Windows absolu n'y pointe sur rien, et le fichier serait introuvable. `/ticket:config` ecrit a ces memes emplacements ; lecture et ecriture doivent utiliser la **meme** ecriture relative / `~`.
 
 S'il existe, charge-le : il fournit la liste des **applications** (nom, `jiraProjectKey`) et optionnellement le **site Jira**. Ces valeurs pre-remplissent la conversation (proposer la liste d'apps, deduire la cle de projet) au lieu d'etre redemandees.
 

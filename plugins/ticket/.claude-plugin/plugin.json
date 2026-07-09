@@ -1,6 +1,6 @@
 {
   "name": "ticket",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Redacteur de tickets (standard 3 Amigos) : mene une conversation guidee (une question a la fois, au fil de l'eau, jamais un formulaire) pour collecter tous les champs du template selon le type ([Bug], [Regression], [Amelioration], [US]), valide les regles d'or, puis cree le ticket via le MCP Atlassian ou produit un markdown a copier. Applications et cles de projet Jira sont definis dans un fichier de config local (rien d'interne n'est code en dur) ; l'environnement, lui, depend du contexte du ticket et est demande a chaque redaction.",
   "author": {
     "name": "CEGAPE"
